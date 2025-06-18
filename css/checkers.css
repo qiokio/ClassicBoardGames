@@ -1,0 +1,174 @@
+/* 跳棋样式 */
+
+.checkers-board {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    width: 100%;
+    max-width: 600px;
+    aspect-ratio: 1/1;
+    margin: 20px auto;
+    border: 2px solid #333;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.cell {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 100%;
+    cursor: pointer;
+}
+
+/* 棋盘格子颜色 */
+.cell.light {
+    background-color: #f0d9b5;
+}
+
+.cell.dark {
+    background-color: #b58863;
+}
+
+/* 选中状态 */
+.cell.selected {
+    background-color: #aacd4e;
+}
+
+/* 合法移动标记 */
+.cell.legal-move::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30%;
+    height: 30%;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* 棋子样式 */
+.piece {
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    top: 10%;
+    left: 10%;
+    border-radius: 50%;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);
+    transition: transform 0.2s;
+    z-index: 2;
+}
+
+/* 红方棋子 */
+.piece.red {
+    background: radial-gradient(circle at 30% 30%, #ff6b6b, #c20000);
+    border: 2px solid #da0000;
+}
+
+/* 黑方棋子 */
+.piece.black {
+    background: radial-gradient(circle at 30% 30%, #666, #000);
+    border: 2px solid #333;
+}
+
+/* 王棋样式 */
+.piece.king::after {
+    content: '★';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 1.5em;
+    text-shadow: 0 0 2px #000;
+}
+
+.piece.red.king::after {
+    color: #ffcc00;
+}
+
+/* 棋子悬停效果 */
+.piece:hover {
+    transform: scale(1.05);
+}
+
+/* 回合指示器 */
+.player-turn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.player-marker {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.player-marker.red {
+    background-color: #c20000;
+}
+
+.player-marker.black {
+    background-color: #000;
+}
+
+/* 游戏控制区 */
+.game-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+/* 难度选择器 */
+.difficulty-selector {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 15px 0;
+}
+
+/* 游戏模式选择 */
+.mode-selector {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+/* 响应式调整 */
+@media (max-width: 600px) {
+    .checkers-board {
+        max-width: 90%;
+    }
+    
+    .piece.king::after {
+        font-size: 1.2em;
+    }
+    
+    .game-controls button,
+    .difficulty-selector button,
+    .mode-selector button {
+        padding: 6px 10px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 400px) {
+    .piece.king::after {
+        font-size: 1em;
+    }
+    
+    .game-controls {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .game-controls button {
+        width: 80%;
+    }
+} 

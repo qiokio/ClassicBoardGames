@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>井字棋 - 趣玩游戏集</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/minimalist.css">
+    <link rel="stylesheet" href="../css/tictactoe.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>井字棋</h1>
+        </div>
+    </header>
+    
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="../index.html">首页</a></li>
+                <li><a href="#" class="active">井字棋</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <main class="container game-page">
+        <div class="game-info">
+            <div class="player-turn">
+                <div class="player-marker" id="turn-marker"></div>
+                <span id="turn-text">玩家 X 回合</span>
+            </div>
+            <div class="scores">
+                <span>X胜: <span id="x-score">0</span></span>
+                <span>平局: <span id="tie-score">0</span></span>
+                <span>O胜: <span id="o-score">0</span></span>
+            </div>
+        </div>
+        
+        <div class="mode-selector">
+            <button id="pvp-btn" class="game-btn active">双人对战</button>
+            <button id="pvc-btn" class="game-btn">人机对战</button>
+        </div>
+        
+        <div class="difficulty-selector" id="difficulty-selector" style="display: none;">
+            <button class="game-btn active" data-level="easy">简单</button>
+            <button class="game-btn" data-level="medium">中等</button>
+            <button class="game-btn" data-level="hard">困难</button>
+        </div>
+        
+        <div id="game-container">
+            <div class="board" id="board">
+                <div class="cell" data-index="0"></div>
+                <div class="cell" data-index="1"></div>
+                <div class="cell" data-index="2"></div>
+                <div class="cell" data-index="3"></div>
+                <div class="cell" data-index="4"></div>
+                <div class="cell" data-index="5"></div>
+                <div class="cell" data-index="6"></div>
+                <div class="cell" data-index="7"></div>
+                <div class="cell" data-index="8"></div>
+            </div>
+        </div>
+        
+        <div class="game-controls">
+            <button id="reset-btn" class="game-btn">重新开始</button>
+            <button id="reset-score-btn" class="game-btn">重置分数</button>
+        </div>
+        
+        <div class="game-instructions">
+            <h3>游戏说明：</h3>
+            <p>轮流在空格子中放置X和O，先形成一条直线(横、竖或对角线)的玩家获胜。</p>
+            <p>在人机对战模式中，玩家使用X，电脑使用O。可以选择不同的难度级别。</p>
+            <p>简单模式下电脑随机落子，中等模式会阻止玩家连成一线，困难模式会寻求最优策略。</p>
+            <p>记录每局比赛的胜负结果，并可以重置当前的比分。</p>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 趣玩游戏集 | <a href="../index.html">返回首页</a></p>
+        </div>
+    </footer>
+    
+    <script src="../js/games/tictactoe.js"></script>
+</body>
+</html> 

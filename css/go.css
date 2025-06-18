@@ -1,0 +1,191 @@
+/* 围棋样式 */
+
+.go-board {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    aspect-ratio: 1/1;
+    margin: 20px auto;
+    background-color: #e8bb77;
+    border: 2px solid #7c3f00;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* 棋盘网格 */
+.go-board::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(to right, #000 1px, transparent 1px),
+        linear-gradient(to bottom, #000 1px, transparent 1px);
+    background-size: calc(100% / (var(--board-size) - 1)) calc(100% / (var(--board-size) - 1));
+    background-position: center;
+    z-index: 1;
+}
+
+/* 棋盘星位点 */
+.star-point {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #000;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+}
+
+/* 落子点 */
+.intersection {
+    position: absolute;
+    width: calc(100% / var(--board-size));
+    height: calc(100% / var(--board-size));
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    z-index: 3;
+}
+
+/* 棋子 */
+.stone {
+    position: absolute;
+    width: 90%;
+    height: 90%;
+    top: 5%;
+    left: 5%;
+    border-radius: 50%;
+    z-index: 4;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* 黑棋 */
+.stone.black {
+    background: radial-gradient(circle at 30% 30%, #666, #000 80%);
+}
+
+/* 白棋 */
+.stone.white {
+    background: radial-gradient(circle at 30% 30%, #fff, #ddd 80%);
+}
+
+/* 最后一手标记 */
+.intersection.last-move .stone::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30%;
+    height: 30%;
+    border-radius: 50%;
+    background-color: rgba(255, 0, 0, 0.5);
+}
+
+/* 回合指示器 */
+.player-turn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.player-marker {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.player-marker.black {
+    background: radial-gradient(circle at 30% 30%, #666, #000 80%);
+}
+
+.player-marker.white {
+    background: radial-gradient(circle at 30% 30%, #fff, #ddd 80%);
+    border: 1px solid #999;
+}
+
+/* 游戏状态显示 */
+.game-status {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 10px 0;
+}
+
+/* 棋盘尺寸选择器 */
+.board-size-selector {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+/* 游戏控制区 */
+.game-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+/* 难度选择器 */
+.difficulty-selector {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 15px 0;
+}
+
+/* 游戏模式选择 */
+.mode-selector {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+/* 响应式调整 */
+@media (max-width: 600px) {
+    .go-board {
+        max-width: 90%;
+    }
+    
+    .star-point {
+        width: 6px;
+        height: 6px;
+    }
+    
+    .game-controls button,
+    .difficulty-selector button,
+    .mode-selector button,
+    .board-size-selector button {
+        padding: 6px 10px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 400px) {
+    .star-point {
+        width: 4px;
+        height: 4px;
+    }
+    
+    .game-controls {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .game-controls button {
+        width: 80%;
+    }
+    
+    .game-status {
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+    }
+} 

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>趣玩游戏集</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/minimalist.css">
+    <link rel="stylesheet" href="css/minimalist-index.css">
+    <script>
+        // 获取游戏状态
+        document.addEventListener('DOMContentLoaded', function() {
+            // 加载各个游戏的最高分和最后游玩时间
+            const games = [
+                {id: 'chess', name: '国际象棋'},
+                {id: 'xiangqi', name: '中国象棋'},
+                {id: 'tictactoe', name: '井字棋'},
+                {id: 'gomoku', name: '五子棋'},
+                {id: 'shogi', name: '将棋'},
+                {id: 'go', name: '围棋'}
+            ];
+            
+            games.forEach(game => {
+                const highScore = localStorage.getItem(`game_${game.id}_highscore`) || '0';
+                const lastPlayed = localStorage.getItem(`game_${game.id}_lastplayed`);
+                
+                const scoreElement = document.getElementById(`${game.id}-score`);
+                const lastPlayedElement = document.getElementById(`${game.id}-last-played`);
+                
+                if (scoreElement) {
+                    scoreElement.textContent = `最高分: ${highScore}`;
+                }
+                
+                if (lastPlayedElement && lastPlayed) {
+                    const date = new Date(lastPlayed);
+                    lastPlayedElement.textContent = `上次游玩: ${formatDate(date)}`;
+                }
+            });
+        });
+        
+        // 格式化日期
+        function formatDate(date) {
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays === 0) {
+                return '今天';
+            } else if (diffDays === 1) {
+                return '昨天';
+            } else if (diffDays < 7) {
+                return `${diffDays}天前`;
+            } else {
+                return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+            }
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>趣玩游戏集</h1>
+        </div>
+    </header>
+    
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="#" class="active">首页</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="container">
+            <section class="intro-section">
+                <h2>欢迎来到趣玩游戏集！</h2>
+                <p>在这里，你可以尽情享受各种经典小游戏，挑战自己，刷新记录！</p>
+            </section>
+            
+            <div class="games-grid">
+                <!-- 国际象棋游戏 -->
+                <div class="game-card" id="game-chess">
+                    <div class="game-card-img">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 22H5v-2h14v2M17.16 8.26A8.94 8.94 0 0018 5.5C18 3 16.42 1 14.5 1 12.32 1 11.4 2.47 10 5c-.5.91-1.2 2-2 2-.8 0-1.5-1.09-2-2-1.4-2.53-2.32-4-4.5-4C-.42 1-2 3-2 5.5c0 .88.11 1.74.3 2.55L7 22h2l1.2-3.5h3.6L15 22h2l8.46-13.74M7.12 16l-1.81-5.22 4.67-4.64 4.67 4.64L12.88 16H7.12z"/>
+                        </svg>
+                    </div>
+                    <div class="game-card-content">
+                        <h3>国际象棋</h3>
+                        <p>古老而深奥的国际象棋，支持人机对战与不同难度级别！</p>
+                        <div class="game-stats">
+                            <span id="chess-score">最高分: 0</span>
+                            <span id="chess-last-played">从未玩过</span>
+                        </div>
+                        <a href="games/chess.html" class="play-btn">开始游戏</a>
+                    </div>
+                </div>
+                
+                <!-- 中国象棋游戏 -->
+                <div class="game-card" id="game-xiangqi">
+                    <div class="game-card-img">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="3" y="3" width="18" height="18" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                            <line x1="3" y1="8" x2="21" y2="8" stroke="currentColor" stroke-width="1.5"/>
+                            <line x1="3" y1="13" x2="21" y2="13" stroke="currentColor" stroke-width="1.5"/>
+                            <line x1="3" y1="18" x2="21" y2="18" stroke="currentColor" stroke-width="1.5"/>
+                            <line x1="8" y1="3" x2="8" y2="21" stroke="currentColor" stroke-width="1.5"/>
+                            <line x1="13" y1="3" x2="13" y2="21" stroke="currentColor" stroke-width="1.5"/>
+                            <line x1="18" y1="3" x2="18" y2="21" stroke="currentColor" stroke-width="1.5"/>
+                        </svg>
+                    </div>
+                    <div class="game-card-content">
+                        <h3>中国象棋</h3>
+                        <p>传统的中国象棋游戏，体验将军、兵卒交锋的战略与战术！</p>
+                        <div class="game-stats">
+                            <span id="xiangqi-score">最高分: 0</span>
+                            <span id="xiangqi-last-played">从未玩过</span>
+                        </div>
+                        <a href="games/xiangqi.html" class="play-btn">开始游戏</a>
+                    </div>
+                </div>
+                
+                <!-- 井字棋游戏 -->
+                <div class="game-card" id="game-tictactoe">
+                    <div class="game-card-img">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 3V21H21V3H3ZM9 17V7H15V17H9Z"/>
+                        </svg>
+                    </div>
+                    <div class="game-card-content">
+                        <h3>井字棋</h3>
+                        <p>经典的井字棋游戏，与电脑对战，看谁先连成一线！</p>
+                        <div class="game-stats">
+                            <span id="tictactoe-score">最高分: 0</span>
+                            <span id="tictactoe-last-played">从未玩过</span>
+                        </div>
+                        <a href="games/tictactoe.html" class="play-btn">开始游戏</a>
+                    </div>
+                </div>
+                
+                <!-- 五子棋游戏 -->
+                <div class="game-card" id="game-gomoku">
+                    <div class="game-card-img">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 3H21V21H3V3ZM5 5V19H19V5H5Z"/>
+                            <circle cx="8" cy="8" r="1.5"/>
+                            <circle cx="16" cy="8" r="1.5"/>
+                            <circle cx="12" cy="12" r="1.5"/>
+                            <circle cx="8" cy="16" r="1.5"/>
+                            <circle cx="16" cy="16" r="1.5"/>
+                        </svg>
+                    </div>
+                    <div class="game-card-content">
+                        <h3>五子棋</h3>
+                        <p>经典的五子棋游戏，支持双人对战和人机对战，先连成五子者获胜！</p>
+                        <div class="game-stats">
+                            <span id="gomoku-score">最高分: 0</span>
+                            <span id="gomoku-last-played">从未玩过</span>
+                        </div>
+                        <a href="games/gomoku.html" class="play-btn">开始游戏</a>
+                    </div>
+                </div>
+                
+                <!-- 将棋游戏 -->
+                <div class="game-card" id="game-shogi">
+                    <div class="game-card-img">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="3" y="3" width="18" height="18" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                            <polygon points="12,6 9,10 15,10" fill="none" stroke="currentColor" stroke-width="1.2"/>
+                            <polygon points="8,12 6,16 10,16" fill="none" stroke="currentColor" stroke-width="1.2"/>
+                            <polygon points="16,12 14,16 18,16" fill="none" stroke="currentColor" stroke-width="1.2"/>
+                            <line x1="12" y1="10" x2="12" y2="16" stroke="currentColor" stroke-width="1.2"/>
+                        </svg>
+                    </div>
+                    <div class="game-card-content">
+                        <h3>将棋</h3>
+                        <p>日本传统棋类游戏，棋子可升变，战术更加丰富多变，支持多种难度级别！</p>
+                        <div class="game-stats">
+                            <span id="shogi-score">最高分: 0</span>
+                            <span id="shogi-last-played">从未玩过</span>
+                        </div>
+                        <a href="games/shogi.html" class="play-btn">开始游戏</a>
+                    </div>
+                </div>
+                
+                <!-- 围棋游戏 -->
+                <div class="game-card" id="game-go">
+                    <div class="game-card-img">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="2" y="2" width="20" height="20" rx="1" fill="none" stroke="currentColor" stroke-width="1"/>
+                            <line x1="7" y1="2" x2="7" y2="22" stroke="currentColor" stroke-width="0.5"/>
+                            <line x1="12" y1="2" x2="12" y2="22" stroke="currentColor" stroke-width="0.5"/>
+                            <line x1="17" y1="2" x2="17" y2="22" stroke="currentColor" stroke-width="0.5"/>
+                            <line x1="2" y1="7" x2="22" y2="7" stroke="currentColor" stroke-width="0.5"/>
+                            <line x1="2" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width="0.5"/>
+                            <line x1="2" y1="17" x2="22" y2="17" stroke="currentColor" stroke-width="0.5"/>
+                            <circle cx="7" cy="7" r="1.5"/>
+                            <circle cx="17" cy="17" r="1.5" fill="white" stroke="currentColor" stroke-width="0.5"/>
+                        </svg>
+                    </div>
+                    <div class="game-card-content">
+                        <h3>围棋</h3>
+                        <p>深奥的围棋游戏，通过围地和吃子取胜，支持不同难度级别！</p>
+                        <div class="game-stats">
+                            <span id="go-score">最高分: 0</span>
+                            <span id="go-last-played">从未玩过</span>
+                        </div>
+                        <a href="games/go.html" class="play-btn">开始游戏</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 趣玩游戏集 | 享受游戏的乐趣</p>
+        </div>
+    </footer>
+</body>
+</html> 

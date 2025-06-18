@@ -1,0 +1,97 @@
+/* 井字棋游戏 - 极简风格专用样式 */
+
+#game-container {
+    width: 300px;
+    margin: 0 auto;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: var(--spacing-sm);
+    background-color: var(--accent-color);
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-md);
+}
+
+.cell {
+    width: 90px;
+    height: 90px;
+    background-color: white;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.cell:hover {
+    background-color: var(--hover-color);
+}
+
+.cell.x {
+    color: var(--text-color);
+}
+
+.cell.o {
+    color: var(--text-light);
+}
+
+.player-turn {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.player-marker {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: var(--text-color);
+    opacity: 0.8;
+}
+
+.player-marker.o {
+    background-color: var(--text-light);
+}
+
+.scores {
+    display: flex;
+    gap: var(--spacing-md);
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+.scores span span {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.mode-selector, .difficulty-selector {
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-sm);
+}
+
+/* 难度选择器样式（默认隐藏，在人机模式下显示） */
+.difficulty-selector {
+    margin-top: var(--spacing-sm);
+}
+
+@media (max-width: 400px) {
+    #game-container {
+        width: 100%;
+    }
+    
+    .cell {
+        width: 100%;
+        height: 80px;
+        font-size: 1.8rem;
+    }
+} 

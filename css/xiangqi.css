@@ -1,0 +1,190 @@
+/* 中国象棋样式 */
+
+.xiangqi-board {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    aspect-ratio: 9/10;
+    margin: 20px auto;
+    background-color: #f2d098;
+    border: 2px solid #7c3f00;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* 棋盘网格 */
+.xiangqi-board::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(to right, #7c3f00 1px, transparent 1px),
+        linear-gradient(to bottom, #7c3f00 1px, transparent 1px);
+    background-size: calc(100% / 8) calc(100% / 9);
+    background-position: 0 0;
+    z-index: 1;
+}
+
+/* 楚河汉界 */
+.xiangqi-board::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: calc(50% - 1px);
+    width: 100%;
+    height: 2px;
+    background-color: #7c3f00;
+    z-index: 2;
+}
+
+.cell {
+    position: absolute;
+    width: calc(100% / 9);
+    height: calc(100% / 10);
+    cursor: pointer;
+    z-index: 3;
+}
+
+.cell.selected {
+    background-color: rgba(170, 205, 78, 0.5);
+    border-radius: 50%;
+    transform: scale(0.9);
+}
+
+.cell.legal-move::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30%;
+    height: 30%;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.piece {
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    top: 10%;
+    left: 10%;
+    border-radius: 50%;
+    background-color: #f8f3e3;
+    border: 2px solid #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "KaiTi", "STKaiti", "FangSong", serif;
+    font-size: 1.5em;
+    font-weight: bold;
+    z-index: 4;
+}
+
+/* 红方棋子 */
+.piece.red {
+    background-color: #f8f3e3;
+    color: #b20000;
+}
+
+/* 黑方棋子 */
+.piece.black {
+    background-color: #f8f3e3;
+    color: #000;
+}
+
+/* 标记九宫的斜线 */
+.palace-line {
+    position: absolute;
+    background-color: #7c3f00;
+    z-index: 2;
+    transform-origin: center;
+}
+
+/* 棋子类型的中文字符 */
+.piece::before {
+    content: attr(data-type);
+}
+
+/* 回合指示器 */
+.player-turn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.player-marker {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.player-marker.red {
+    background-color: #b20000;
+}
+
+.player-marker.black {
+    background-color: #000;
+}
+
+/* 游戏控制区 */
+.game-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+/* 难度选择器 */
+.difficulty-selector {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 15px 0;
+}
+
+/* 游戏模式选择 */
+.mode-selector {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+/* 响应式调整 */
+@media (max-width: 600px) {
+    .xiangqi-board {
+        max-width: 90%;
+    }
+    
+    .piece {
+        font-size: 1.2em;
+    }
+    
+    .game-controls button,
+    .difficulty-selector button,
+    .mode-selector button {
+        padding: 6px 10px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 400px) {
+    .piece {
+        font-size: 1em;
+    }
+    
+    .game-controls {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .game-controls button {
+        width: 80%;
+    }
+} 

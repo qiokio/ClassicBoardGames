@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>将棋 - 趣玩游戏集</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/minimalist.css">
+    <link rel="stylesheet" href="../css/shogi.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>将棋</h1>
+        </div>
+    </header>
+    
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="../index.html">首页</a></li>
+                <li><a href="#" class="active">将棋</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <main class="container game-page">
+        <div class="game-info">
+            <div class="player-turn">
+                <div class="player-marker" id="turn-marker"></div>
+                <span id="turn-text">玩家回合</span>
+            </div>
+            <div class="game-status" id="game-status">游戏进行中...</div>
+        </div>
+        
+        <div class="difficulty-selector">
+            <label for="difficulty">难度：</label>
+            <select id="difficulty">
+                <option value="easy">简单</option>
+                <option value="medium" selected>中等</option>
+                <option value="hard">困难</option>
+                <option value="expert">专家</option>
+            </select>
+        </div>
+        
+        <div id="game-container" class="game-container">
+            <div class="game-sidebar">
+                <div class="player-info">
+                    <div class="player player-you">
+                        <span class="player-name">玩家</span>
+                        <div class="captured-pieces" id="player-captured"></div>
+                    </div>
+                    <div class="player player-ai">
+                        <span class="player-name">电脑</span>
+                        <div class="captured-pieces" id="ai-captured"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="game-board-container">
+                <div class="board-wrapper">
+                    <div id="shogi-board" class="shogi-board">
+                        <!-- 棋盘将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+                <div class="promotion-dialog" id="promotion-dialog">
+                    <div class="promotion-title">是否升变棋子？</div>
+                    <div class="promotion-options">
+                        <button id="promote-yes" class="btn">是</button>
+                        <button id="promote-no" class="btn">否</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="game-controls">
+            <button id="new-game-btn" class="game-btn">新游戏</button>
+            <button id="undo-btn" class="game-btn">悔棋</button>
+            <button id="hint-btn" class="game-btn">提示</button>
+        </div>
+        
+        <div class="game-instructions">
+            <h3>游戏说明：</h3>
+            <p>将棋是日本传统棋类游戏，类似于国际象棋和中国象棋。</p>
+            <p>特点：</p>
+            <ul>
+                <li><strong>棋子升变</strong>：当棋子进入敌方阵地（最后三行）时，可以选择升变，增强棋子能力</li>
+                <li><strong>打入规则</strong>：吃掉的棋子可以作为自己的棋子使用，在空白格子上放置</li>
+                <li><strong>获胜条件</strong>：将对方的王将/玉将困住（将死）</li>
+            </ul>
+            <p>棋子种类：</p>
+            <ul>
+                <li><strong>王将/玉将(K)</strong>：可以向八个方向移动一格</li>
+                <li><strong>飞车(R)</strong>：可以横向和纵向移动任意格数</li>
+                <li><strong>角行(B)</strong>：可以沿对角线移动任意格数</li>
+                <li><strong>金将(G)</strong>：可以向前、左、右、左前、右前和后方移动一格</li>
+                <li><strong>银将(S)</strong>：可以向前、左前、右前、左后和右后移动一格</li>
+                <li><strong>桂马(N)</strong>：可以跳跃式移动，类似于国际象棋中的马</li>
+                <li><strong>香车(L)</strong>：可以向前移动任意格数</li>
+                <li><strong>步兵(P)</strong>：只能向前移动一格</li>
+            </ul>
+            <p>点击棋子可以查看其可移动的位置，再点击目标位置完成移动。</p>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 趣玩游戏集 | <a href="../index.html">返回首页</a></p>
+        </div>
+    </footer>
+    
+    <script src="../js/games/shogi.js"></script>
+    <script src="../js/games/shogi-ai.js"></script>
+</body>
+</html> 

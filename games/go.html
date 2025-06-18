@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>围棋 - 趣玩游戏集</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/minimalist.css">
+    <link rel="stylesheet" href="../css/go.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>围棋</h1>
+        </div>
+    </header>
+    
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="../index.html">首页</a></li>
+                <li><a href="#" class="active">围棋</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <main class="container game-page">
+        <div class="game-info">
+            <div class="player-turn">
+                <div class="player-marker" id="turn-marker"></div>
+                <span id="turn-text">黑方回合</span>
+            </div>
+            <div class="scores">
+                <span>黑胜: <span id="black-score">0</span></span>
+                <span>白胜: <span id="white-score">0</span></span>
+            </div>
+            <div class="game-status">
+                <span>黑方已提子: <span id="black-captures">0</span></span>
+                <span>白方已提子: <span id="white-captures">0</span></span>
+            </div>
+        </div>
+        
+        <div class="mode-selector">
+            <button id="pvp-btn" class="game-btn active">双人对战</button>
+            <button id="pvc-btn" class="game-btn">人机对战</button>
+        </div>
+        
+        <div class="board-size-selector" id="board-size-selector">
+            <button class="game-btn" data-size="9">9×9</button>
+            <button class="game-btn active" data-size="13">13×13</button>
+            <button class="game-btn" data-size="19">19×19</button>
+        </div>
+        
+        <div class="difficulty-selector" id="difficulty-selector" style="display: none;">
+            <button class="game-btn active" data-level="easy">入门</button>
+            <button class="game-btn" data-level="medium">初级</button>
+            <button class="game-btn" data-level="hard">中级</button>
+            <button class="game-btn" data-level="expert">高级</button>
+            <button class="game-btn" data-level="master">专家</button>
+            <button class="game-btn" data-level="grandmaster">大师</button>
+            <button class="game-btn" data-level="legendary">职业级</button>
+        </div>
+        
+        <div id="game-container">
+            <div class="go-board" id="board">
+                <!-- 棋盘将由JavaScript动态生成 -->
+            </div>
+        </div>
+        
+        <div class="game-controls">
+            <button id="reset-btn" class="game-btn">重新开始</button>
+            <button id="pass-btn" class="game-btn">放弃一手</button>
+            <button id="resign-btn" class="game-btn">认输</button>
+            <button id="undo-btn" class="game-btn">悔棋</button>
+            <button id="reset-score-btn" class="game-btn">重置分数</button>
+        </div>
+        
+        <div class="game-instructions">
+            <h3>游戏说明：</h3>
+            <p>围棋是一种源自中国的古老战略棋盘游戏，黑白双方轮流在交叉点上放置棋子，通过围地和吃子来获取更多领地。</p>
+            <p>游戏规则：</p>
+            <ul>
+                <li>黑方先行，双方交替在棋盘交叉点上放置棋子</li>
+                <li>棋子一旦放下不能移动，除非被对方吃掉</li>
+                <li>当一个棋子或一组棋子的所有气（与相邻交叉点的连接）都被对方棋子占据时，这些棋子被提走</li>
+                <li>禁止自杀，即不能把棋子放在会立即被提走的位置</li>
+                <li>禁止全局同型重复（打劫规则）</li>
+                <li>当双方连续放弃落子（放弃一手）时，游戏结束，计算各自领地和提子确定胜负</li>
+            </ul>
+            <p>在人机对战模式中，玩家使用黑方，电脑使用白方。可以选择不同的难度级别和棋盘大小。</p>
+            <p>难度级别说明：</p>
+            <ul>
+                <li><strong>入门</strong>：适合初学者，AI走子随机性高，不会应用战术</li>
+                <li><strong>初级</strong>：AI具备基本下棋逻辑，能避免明显错误</li>
+                <li><strong>中级</strong>：AI会使用基本战术，有简单布局意识</li>
+                <li><strong>高级</strong>：AI能识别棋局形势，会使用常见定式</li>
+                <li><strong>专家</strong>：AI具备全局观念，能进行中盘战斗和收官计算</li>
+                <li><strong>大师</strong>：AI使用深度搜索和形势判断，接近业余高手水平</li>
+                <li><strong>职业级</strong>：AI采用先进算法，具备专业水平的棋力</li>
+            </ul>
+            <p>游戏中可以使用"悔棋"功能撤销上一步操作，在人机对战模式下悔棋会同时撤销玩家和电脑的最后一步。</p>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 趣玩游戏集 | <a href="../index.html">返回首页</a></p>
+        </div>
+    </footer>
+    
+    <!-- 加载游戏脚本 -->
+    <script src="../js/games/go.js"></script>
+</body>
+</html> 

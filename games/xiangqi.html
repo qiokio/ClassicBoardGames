@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中国象棋 - 趣玩游戏集</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/minimalist.css">
+    <link rel="stylesheet" href="../css/xiangqi.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>中国象棋</h1>
+        </div>
+    </header>
+    
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="../index.html">首页</a></li>
+                <li><a href="#" class="active">中国象棋</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <main class="container game-page">
+        <div class="game-info">
+            <div class="player-turn">
+                <div class="player-marker" id="turn-marker"></div>
+                <span id="turn-text">红方回合</span>
+            </div>
+            <div class="scores">
+                <span>红胜: <span id="red-score">0</span></span>
+                <span>平局: <span id="tie-score">0</span></span>
+                <span>黑胜: <span id="black-score">0</span></span>
+            </div>
+        </div>
+        
+        <div class="mode-selector">
+            <button id="pvp-btn" class="game-btn active">双人对战</button>
+            <button id="pvc-btn" class="game-btn">人机对战</button>
+        </div>
+        
+        <div class="difficulty-selector" id="difficulty-selector" style="display: none;">
+            <button class="game-btn active" data-level="easy">新手</button>
+            <button class="game-btn" data-level="medium">入门</button>
+            <button class="game-btn" data-level="hard">初级</button>
+            <button class="game-btn" data-level="expert">中级</button>
+            <button class="game-btn" data-level="master">高级</button>
+            <button class="game-btn" data-level="grandmaster">大师</button>
+        </div>
+        
+        <div id="game-container">
+            <div class="xiangqi-board" id="board">
+                <!-- 棋盘将由JavaScript动态生成 -->
+            </div>
+        </div>
+        
+        <div class="game-controls">
+            <button id="reset-btn" class="game-btn">重新开始</button>
+            <button id="undo-btn" class="game-btn">悔棋</button>
+            <button id="reset-score-btn" class="game-btn">重置分数</button>
+        </div>
+        
+        <div class="game-instructions">
+            <h3>游戏说明：</h3>
+            <p>中国象棋是一种古老的策略棋盘游戏，红黑双方交替移动各自棋子，目标是将死对方的将帅。</p>
+            <p>在人机对战模式中，玩家使用红方，电脑使用黑方。可以选择不同的难度级别。</p>
+            <p>难度级别说明：</p>
+            <ul>
+                <li><strong>新手</strong>：适合初学者，AI采用基础策略，走子随机性高</li>
+                <li><strong>入门</strong>：AI会注意吃子和避免被吃，但缺乏整体战略</li>
+                <li><strong>初级</strong>：AI具备基本战术意识，会保护自己的关键棋子</li>
+                <li><strong>中级</strong>：AI会进行适当的战略部署，具备一定攻防转换能力</li>
+                <li><strong>高级</strong>：AI具备良好的棋型意识和计算能力，能形成有效威胁</li>
+                <li><strong>大师</strong>：AI使用深度搜索和专业战术，能够识别复杂局面，接近业余高手水平</li>
+            </ul>
+            <p>游戏中可以使用"悔棋"功能撤销上一步操作，在人机对战模式下悔棋会同时撤销玩家和电脑的最后一步。</p>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 趣玩游戏集 | <a href="../index.html">返回首页</a></p>
+        </div>
+    </footer>
+    
+    <!-- 加载游戏脚本 -->
+    <script src="../js/games/xiangqi.js"></script>
+</body>
+</html> 

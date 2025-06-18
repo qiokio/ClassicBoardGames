@@ -1,0 +1,231 @@
+/* 国际象棋样式 */
+
+.chess-board {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    width: 100%;
+    max-width: 600px;
+    aspect-ratio: 1/1;
+    margin: 20px auto;
+    border: 2px solid #333;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.cell {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 100%;
+    cursor: pointer;
+    user-select: none;
+}
+
+.cell.light {
+    background-color: #f0d9b5;
+}
+
+.cell.dark {
+    background-color: #b58863;
+}
+
+.cell.selected {
+    background-color: #aacd4e;
+}
+
+.cell.legal-move::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30%;
+    height: 30%;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.piece {
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    top: 10%;
+    left: 10%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* 白棋样式 */
+.piece.white.pawn {
+    background-image: url('../images/chess/white-pawn.svg');
+}
+
+.piece.white.rook {
+    background-image: url('../images/chess/white-rook.svg');
+}
+
+.piece.white.knight {
+    background-image: url('../images/chess/white-knight.svg');
+}
+
+.piece.white.bishop {
+    background-image: url('../images/chess/white-bishop.svg');
+}
+
+.piece.white.queen {
+    background-image: url('../images/chess/white-queen.svg');
+}
+
+.piece.white.king {
+    background-image: url('../images/chess/white-king.svg');
+}
+
+/* 黑棋样式 */
+.piece.black.pawn {
+    background-image: url('../images/chess/black-pawn.svg');
+}
+
+.piece.black.rook {
+    background-image: url('../images/chess/black-rook.svg');
+}
+
+.piece.black.knight {
+    background-image: url('../images/chess/black-knight.svg');
+}
+
+.piece.black.bishop {
+    background-image: url('../images/chess/black-bishop.svg');
+}
+
+.piece.black.queen {
+    background-image: url('../images/chess/black-queen.svg');
+}
+
+.piece.black.king {
+    background-image: url('../images/chess/black-king.svg');
+}
+
+/* 回合指示器 */
+.player-turn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.player-marker {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.player-marker.white {
+    background-color: #fff;
+    border: 1px solid #333;
+}
+
+.player-marker.black {
+    background-color: #333;
+}
+
+/* 游戏控制区 */
+.game-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+/* 难度选择器 */
+.difficulty-selector {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 15px 0;
+}
+
+/* 游戏模式选择 */
+.mode-selector {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+/* 升变选择对话框 */
+.promotion-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.promotion-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.promotion-options {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.promotion-option {
+    width: 60px;
+    height: 60px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    padding: 5px;
+    transition: all 0.2s;
+}
+
+.promotion-option:hover {
+    border-color: #aacd4e;
+    transform: scale(1.1);
+}
+
+/* 响应式调整 */
+@media (max-width: 600px) {
+    .chess-board {
+        max-width: 90%;
+    }
+    
+    .game-controls button,
+    .difficulty-selector button,
+    .mode-selector button {
+        padding: 6px 10px;
+        font-size: 14px;
+    }
+    
+    .promotion-option {
+        width: 45px;
+        height: 45px;
+    }
+}
+
+@media (max-width: 400px) {
+    .game-controls {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .game-controls button {
+        width: 80%;
+    }
+} 
