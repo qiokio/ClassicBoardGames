@@ -41,14 +41,6 @@ function makeAIMove() {
             console.log("使用大师难度AI策略");
             aiMove = makeMasterMove();
             break;
-        case 'grandmaster':
-            console.log("使用超级大师难度AI策略");
-            aiMove = makeGrandmasterMove();
-            break;
-        case 'legendary':
-            console.log("使用传奇难度AI策略");
-            aiMove = makeLegendaryMove();
-            break;
         default:
             console.log("使用简单难度AI策略");
             // 默认使用简单随机策略
@@ -238,82 +230,6 @@ function makeMasterMove() {
     if (minMaxMove) return minMaxMove;
     
     // 如果极小化极大算法失败，回退到使用评分系统
-    return findBestPositionByScore();
-}
-
-// 超级大师模式：使用更深层次的搜索和高级棋形识别
-function makeGrandmasterMove() {
-    // 1. 先检查AI自己能否连五子获胜（立即获胜的情况）
-    const winningMove = findWinningMove(PLAYER_WHITE);
-    if (winningMove) return winningMove;
-    
-    // 2. 检查玩家是否能连五子，如果能则阻止（立即防守的情况）
-    const blockingMove = findWinningMove(PLAYER_BLACK);
-    if (blockingMove) return blockingMove;
-    
-    // 3. 检查AI自己是否能形成VCT(连贯威胁组合)获胜路径
-    const vctMove = findVCTMove(PLAYER_WHITE);
-    if (vctMove) return vctMove;
-    
-    // 4. 检查玩家是否能形成VCT获胜路径，如果能则阻止
-    const blockVCTMove = findVCTMove(PLAYER_BLACK);
-    if (blockVCTMove) return blockVCTMove;
-    
-    // 5. 使用迭代加深的极小化极大算法进行更深层次搜索
-    const deepeningMove = findBestMoveWithIterativeDeepening();
-    if (deepeningMove) return deepeningMove;
-    
-    // 如果迭代加深搜索失败，回退到使用战术移动
-    const tacticalMove = findTacticalMove();
-    if (tacticalMove) return tacticalMove;
-    
-    // 最后回退到评分系统
-    return findBestPositionByScore();
-}
-
-// 传奇模式：结合深度学习模型和专业五子棋策略
-function makeLegendaryMove() {
-    // 1. 先检查AI自己能否连五子获胜（立即获胜的情况）
-    const winningMove = findWinningMove(PLAYER_WHITE);
-    if (winningMove) return winningMove;
-    
-    // 2. 检查玩家是否能连五子，如果能则阻止（立即防守的情况）
-    const blockingMove = findWinningMove(PLAYER_BLACK);
-    if (blockingMove) return blockingMove;
-    
-    // 3. 检查AI自己是否能形成必胜组合（VCF - 连续强制胜利）
-    const vcfMove = findVCFMove(PLAYER_WHITE);
-    if (vcfMove) return vcfMove;
-    
-    // 4. 检查玩家是否能形成必胜组合（VCF），如果能则阻止
-    const blockVCFMove = findVCFMove(PLAYER_BLACK);
-    if (blockVCFMove) return blockVCFMove;
-    
-    // 5. 检查AI自己是否能形成VCT(连贯威胁组合)获胜路径
-    const vctMove = findVCTMove(PLAYER_WHITE);
-    if (vctMove) return vctMove;
-    
-    // 6. 检查玩家是否能形成VCT获胜路径，如果能则阻止
-    const blockVCTMove = findVCTMove(PLAYER_BLACK);
-    if (blockVCTMove) return blockVCTMove;
-    
-    // 7. 检查关键战术点位（包括跳三、活三等）
-    const tacticalMove = findTacticalMove();
-    if (tacticalMove) return tacticalMove;
-    
-    // 8. 使用神经网络评估棋局，结合蒙特卡洛树搜索（AlphaGo式思路）
-    const nnMove = evaluateWithNeuralNetwork();
-    if (nnMove) return nnMove;
-    
-    // 9. 使用开局库中的最佳应对策略
-    const bookMove = findOpeningBookMove();
-    if (bookMove) return bookMove;
-    
-    // 10. 如果所有高级策略都未能产生明确结果，退回到使用强化学习模型
-    const rlMove = findMoveWithReinforcementLearning();
-    if (rlMove) return rlMove;
-    
-    // 最后回退到评分系统
     return findBestPositionByScore();
 }
 
