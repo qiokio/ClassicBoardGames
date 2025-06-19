@@ -110,27 +110,46 @@ function initGame() {
 
 // 设置难度级别
 function setDifficulty(level) {
-    difficultyButtons.forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.getAttribute('data-level') === level) {
-            btn.classList.add('active');
-        }
-    });
-    
-    currentDifficulty = level;
-    gridSize = difficulties[level].size;
-    
-    // 更新网格类名
-    gridElement.className = 'puzzle-grid';
-    if (level !== 'easy') {
-        gridElement.classList.add(level);
+    // 如果难度没有变化，不执行任何操作
+    if (level === currentDifficulty) {
+        return;
     }
     
-    // 重新加载最佳时间
-    loadBestTime();
-    
-    // 重新创建拼图
-    resetGame();
+    // 显示确认对话框
+    if (confirm(`确定要将难度更改为"${getDifficultyName(level)}"吗？这将重新开始游戏。`)) {
+        difficultyButtons.forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.getAttribute('data-level') === level) {
+                btn.classList.add('active');
+            }
+        });
+        
+        currentDifficulty = level;
+        gridSize = difficulties[level].size;
+        
+        // 更新网格类名
+        gridElement.className = 'puzzle-grid';
+        if (level !== 'easy') {
+            gridElement.classList.add(level);
+        }
+        
+        // 重新加载最佳时间
+        loadBestTime();
+        
+        // 重新创建拼图
+        resetGame();
+    }
+}
+
+// 获取难度名称的辅助函数
+function getDifficultyName(difficulty) {
+    const difficultyNames = {
+        'easy': '简单',
+        'medium': '中等',
+        'hard': '困难',
+        'expert': '专家'
+    };
+    return difficultyNames[difficulty] || difficulty;
 }
 
 // 开始游戏

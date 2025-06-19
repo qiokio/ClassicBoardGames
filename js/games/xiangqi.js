@@ -60,11 +60,24 @@ function setupEventListeners() {
     const difficultyButtons = difficultySelector.querySelectorAll('button');
     difficultyButtons.forEach(button => {
         button.addEventListener('click', () => {
-            setDifficulty(button.getAttribute('data-level'));
+            const newDifficulty = button.getAttribute('data-level');
             
-            // 更新UI
-            difficultyButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
+            // 如果难度没有变化，不执行任何操作
+            if (newDifficulty === currentDifficulty) {
+                return;
+            }
+            
+            // 显示确认对话框
+            if (confirm(`确定要将难度更改为"${getDifficultyName(newDifficulty)}"吗？这将重新开始游戏。`)) {
+                setDifficulty(newDifficulty);
+                
+                // 更新UI
+                difficultyButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                // 重置游戏
+                resetGame();
+            }
         });
     });
     
@@ -74,22 +87,43 @@ function setupEventListeners() {
     resetScoreButton.addEventListener('click', resetScores);
 }
 
+// 获取难度名称的辅助函数
+function getDifficultyName(difficulty) {
+    const difficultyNames = {
+        'easy': '简单',
+        'medium': '中等',
+        'hard': '困难',
+        'expert': '专家',
+        'master': '大师',
+        'grandmaster': '特级大师'
+    };
+    return difficultyNames[difficulty] || difficulty;
+}
+
 // 设置游戏模式
 function setGameMode(mode) {
-    gameMode = mode;
-    
-    // 更新UI
-    if (mode === 'pvp') {
-        pvpButton.classList.add('active');
-        pvcButton.classList.remove('active');
-        difficultySelector.style.display = 'none';
-    } else {
-        pvcButton.classList.add('active');
-        pvpButton.classList.remove('active');
-        difficultySelector.style.display = 'flex';
+    // 如果模式没有变化，不执行任何操作
+    if (mode === gameMode) {
+        return;
     }
     
-    resetGame();
+    // 显示确认对话框
+    if (confirm(`确定要切换到${mode === 'pvp' ? '双人对战' : '人机对战'}模式吗？这将重新开始游戏。`)) {
+        gameMode = mode;
+        
+        // 更新UI
+        if (mode === 'pvp') {
+            pvpButton.classList.add('active');
+            pvcButton.classList.remove('active');
+            difficultySelector.style.display = 'none';
+        } else {
+            pvcButton.classList.add('active');
+            pvpButton.classList.remove('active');
+            difficultySelector.style.display = 'flex';
+        }
+        
+        resetGame();
+    }
 }
 
 // 设置AI难度

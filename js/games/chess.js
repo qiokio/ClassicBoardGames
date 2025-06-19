@@ -85,25 +85,55 @@ function setupEventListeners() {
 
 // 设置游戏模式
 function setGameMode(mode) {
-    gameMode = mode;
+    // 如果模式没有变化，不执行任何操作
+    if (mode === gameMode) {
+        return;
+    }
     
-    // 更新UI
-    pvpButton.classList.toggle('active', mode === 'pvp');
-    pvcButton.classList.toggle('active', mode === 'pvc');
-    difficultySelector.style.display = mode === 'pvc' ? 'flex' : 'none';
-    
-    // 重置游戏
-    resetGame();
+    // 显示确认对话框
+    if (confirm(`确定要切换到${mode === 'pvp' ? '双人对战' : '人机对战'}模式吗？这将重新开始游戏。`)) {
+        gameMode = mode;
+        
+        // 更新UI
+        pvpButton.classList.toggle('active', mode === 'pvp');
+        pvcButton.classList.toggle('active', mode === 'pvc');
+        difficultySelector.style.display = mode === 'pvc' ? 'flex' : 'none';
+        
+        // 重置游戏
+        resetGame();
+    }
 }
 
 // 设置AI难度
 function setDifficulty(level) {
-    currentDifficulty = level;
-    
-    // 如果当前是人机模式且轮到AI，则让AI移动
-    if (gameMode === 'pvc' && currentPlayer === PLAYER_BLACK && gameActive) {
-        setTimeout(window.makeAIMove, 500);
+    // 如果难度没有变化，不执行任何操作
+    if (level === currentDifficulty) {
+        return;
     }
+    
+    // 显示确认对话框
+    if (confirm(`确定要将难度更改为"${getDifficultyName(level)}"吗？这将重新开始游戏。`)) {
+        currentDifficulty = level;
+        
+        // 重置游戏
+        resetGame();
+        
+        // 如果当前是人机模式且轮到AI，则让AI移动
+        if (gameMode === 'pvc' && currentPlayer === PLAYER_BLACK && gameActive) {
+            setTimeout(window.makeAIMove, 500);
+        }
+    }
+}
+
+// 获取难度名称的辅助函数
+function getDifficultyName(difficulty) {
+    const difficultyNames = {
+        'easy': '简单',
+        'medium': '中等',
+        'hard': '困难',
+        'expert': '专家'
+    };
+    return difficultyNames[difficulty] || difficulty;
 }
 
 // 重置游戏

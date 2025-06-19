@@ -90,17 +90,43 @@ function createHoles(count) {
 
 // 设置难度
 function setDifficulty(level) {
-    difficultyButtons.forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.getAttribute('data-level') === level) {
-            btn.classList.add('active');
-        }
-    });
+    // 如果难度没有变化，不执行任何操作
+    if (level === currentDifficulty) {
+        return;
+    }
     
-    currentDifficulty = level;
-    timer = difficulties[level].gameTime;
-    timerElement.textContent = timer;
-    maxActiveMoles = difficulties[level].maxMoles;
+    // 显示确认对话框
+    if (confirm(`确定要将难度更改为"${getDifficultyName(level)}"吗？这将重新开始游戏。`)) {
+        difficultyButtons.forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.getAttribute('data-level') === level) {
+                btn.classList.add('active');
+            }
+        });
+        
+        currentDifficulty = level;
+        timer = difficulties[level].gameTime;
+        timerElement.textContent = timer;
+        maxActiveMoles = difficulties[level].maxMoles;
+        
+        // 如果游戏正在进行，重置游戏
+        if (gameActive) {
+            // 停止当前游戏
+            endGame();
+            // 重置UI
+            statusElement.textContent = '已更改难度，点击开始游戏';
+        }
+    }
+}
+
+// 获取难度名称的辅助函数
+function getDifficultyName(difficulty) {
+    const difficultyNames = {
+        'easy': '简单',
+        'medium': '中等',
+        'hard': '困难'
+    };
+    return difficultyNames[difficulty] || difficulty;
 }
 
 // 开始游戏

@@ -2,7 +2,6 @@
 
 // 寻找获胜移动
 function findWinningMove(player) {
-    console.log("查找获胜移动:", player);
     // 检查每个空位置
     for (let row = 0; row < BOARD_SIZE; row++) {
         for (let col = 0; col < BOARD_SIZE; col++) {
@@ -22,14 +21,12 @@ function findWinningMove(player) {
                 
                 // 如果是获胜移动，返回该位置
                 if (isWinning) {
-                    console.log("找到获胜移动:", row, col);
                     return { row, col };
                 }
             }
         }
     }
     
-    console.log("未找到获胜移动");
     return null;
 }
 
@@ -166,8 +163,6 @@ function findNearbyMove() {
 
 // 模拟双重威胁 - 双四局面
 function findDoubleFourMove(player) {
-    console.log("寻找双四移动:", player);
-    
     // 获取所有可用的移动
     const availableMoves = getAvailableMoves();
     
@@ -189,8 +184,6 @@ function findDoubleFourMove(player) {
         if (fourCount >= 2) {
             // 还原棋盘
             gameBoard[move.row][move.col] = EMPTY;
-            
-            console.log(`找到双四移动: (${move.row}, ${move.col})`);
             return move;
         }
         
@@ -198,14 +191,11 @@ function findDoubleFourMove(player) {
         gameBoard[move.row][move.col] = EMPTY;
     }
     
-    console.log("未找到双四移动");
     return null;
 }
 
 // 模拟四三局面
 function findFourThreeMove(player) {
-    console.log("寻找四三局面:", player);
-    
     // 获取所有可用的移动
     const availableMoves = getAvailableMoves();
     
@@ -233,8 +223,6 @@ function findFourThreeMove(player) {
             if (hasFour && hasThree) {
                 // 还原棋盘
                 gameBoard[move.row][move.col] = EMPTY;
-                
-                console.log(`找到四三局面: (${move.row}, ${move.col})`);
                 return move;
             }
         }
@@ -243,14 +231,11 @@ function findFourThreeMove(player) {
         gameBoard[move.row][move.col] = EMPTY;
     }
     
-    console.log("未找到四三局面");
     return null;
 }
 
 // 模拟双三局面
 function findDoubleThreeMove(player) {
-    console.log("寻找双三局面:", player);
-    
     // 获取所有可用的移动
     const availableMoves = getAvailableMoves();
     
@@ -272,8 +257,6 @@ function findDoubleThreeMove(player) {
         if (threeCount >= 2) {
             // 还原棋盘
             gameBoard[move.row][move.col] = EMPTY;
-            
-            console.log(`找到双三局面: (${move.row}, ${move.col})`);
             return move;
         }
         
@@ -281,440 +264,560 @@ function findDoubleThreeMove(player) {
         gameBoard[move.row][move.col] = EMPTY;
     }
     
-    console.log("未找到双三局面");
     return null;
 }
 
-// 使用评分系统选择最佳位置
+// 使用评分系统寻找最佳位置
 function findBestPositionByScore() {
-    console.log("使用评分系统寻找最佳位置");
-    
-    // 获取所有可用的移动
-    const availableMoves = getAvailableMoves();
-    
-    if (availableMoves.length === 0) {
-        console.log("没有可用的移动");
-        return null;
-    }
-    
-    // 评估每个位置的分数
-    const scoredMoves = availableMoves.map(move => {
-        const score = evaluatePosition(move.row, move.col);
-        return { ...move, score };
-    });
-    
-    // 按分数降序排序
-    scoredMoves.sort((a, b) => b.score - a.score);
-    
-    // 返回得分最高的位置
-    console.log(`最佳评分位置: (${scoredMoves[0].row}, ${scoredMoves[0].col}), 评分: ${scoredMoves[0].score}`);
-    return scoredMoves[0];
-}
-
-// 使用极小化极大算法
-function findBestMoveWithMinMax() {
-    console.log("使用极小化极大算法寻找最佳移动");
-    
-    // 获取所有可能的移动
-    const availableMoves = getAvailableMoves();
-    
-    if (availableMoves.length === 0) {
-        console.log("没有可用的移动");
-        return null;
-    }
-    
-    let bestMove = null;
     let bestScore = -Infinity;
+    let bestPosition = null;
     
-    // 对每个可能的移动进行评估
-    for (const move of availableMoves) {
-        // 模拟落子
-        gameBoard[move.row][move.col] = PLAYER_WHITE;
-        
-        // 使用带有历史启发的极小化极大算法评估移动
-        const score = minimaxWithHistory(3, false, -Infinity, Infinity);
-        
-        // 还原棋盘
-        gameBoard[move.row][move.col] = EMPTY;
-        
-        console.log(`位置 (${move.row}, ${move.col}) 的评分: ${score}`);
-        
-        // 更新最佳移动
-        if (score > bestScore) {
-            bestScore = score;
-            bestMove = move;
+    // 遍历所有空位置
+    for (let row = 0; row < BOARD_SIZE; row++) {
+        for (let col = 0; col < BOARD_SIZE; col++) {
+            if (gameBoard[row][col] === EMPTY) {
+                // 评估该位置的分数
+                const score = evaluatePosition(row, col);
+                
+                // 更新最佳位置
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestPosition = { row, col };
+                }
+            }
         }
     }
     
-    console.log(`选择最佳移动: (${bestMove ? bestMove.row : 'null'}, ${bestMove ? bestMove.col : 'null'}), 评分: ${bestScore}`);
-    return bestMove;
+    return bestPosition;
 }
 
-// 神经网络评估
-// function evaluateWithNeuralNetwork() { ... }
+// 使用高级评分系统寻找最佳位置
+function findBestPositionByAdvancedScore() {
+    let bestScore = -Infinity;
+    let bestPosition = null;
+    
+    // 遍历所有空位置
+    for (let row = 0; row < BOARD_SIZE; row++) {
+        for (let col = 0; col < BOARD_SIZE; col++) {
+            if (gameBoard[row][col] === EMPTY) {
+                // 评估该位置的高级分数
+                const score = evaluatePositionAdvanced(row, col);
+                
+                // 更新最佳位置
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestPosition = { row, col };
+                }
+            }
+        }
+    }
+    
+    return bestPosition;
+}
 
-// 战术移动
-// function findTacticalMove() { ... }
-
-// 开局库
-// function findOpeningBookMove() { ... }
-
-// 强化学习
-// function findMoveWithReinforcementLearning() { ... }
-
-// 迭代加深搜索
-// function findBestMoveWithIterativeDeepening() { ... }
-
-// 评估位置的分数
+// 评估位置分数
 function evaluatePosition(row, col) {
-    let score = 0;
-    
-    // 中心位置加分
-    const centerDistance = Math.sqrt(Math.pow(row - 7, 2) + Math.pow(col - 7, 2));
-    score += (7 - centerDistance) * 2;
-    
-    // 标记点位置加分
-    if (MARK_POSITIONS.some(([r, c]) => r === row && c === col)) {
-        score += 10;
+    // 如果该位置周围没有棋子，分数较低
+    if (!hasNeighbor(row, col, 2)) {
+        return 0;
     }
     
-    // 模拟AI放置棋子
+    // 模拟AI在该位置落子
     gameBoard[row][col] = PLAYER_WHITE;
+    const aiScore = evaluateBoard();
     
-    // 评估AI的局势
-    for (const [dx, dy] of DIRECTIONS) {
-        const aiCount = 1 + countConsecutive(row, col, dx, dy, PLAYER_WHITE) + 
-                       countConsecutive(row, col, -dx, -dy, PLAYER_WHITE);
-        
-        // 根据连子数量加分
-        if (aiCount === 5) score += 10000;  // 五子连珠
-        else if (aiCount === 4) score += 1000;  // 四子连珠
-        else if (aiCount === 3) score += 100;   // 三子连珠
-        else if (aiCount === 2) score += 10;    // 二子连珠
-    }
-    
-    // 恢复空位置
-    gameBoard[row][col] = EMPTY;
-    
-    // 模拟玩家放置棋子
+    // 模拟玩家在该位置落子
     gameBoard[row][col] = PLAYER_BLACK;
-    
-    // 评估玩家的局势（防守得分）
-    for (const [dx, dy] of DIRECTIONS) {
-        const playerCount = 1 + countConsecutive(row, col, dx, dy, PLAYER_BLACK) + 
-                           countConsecutive(row, col, -dx, -dy, PLAYER_BLACK);
-        
-        // 根据连子数量加分（防守分值略低于进攻）
-        if (playerCount === 5) score += 8000;  // 五子连珠
-        else if (playerCount === 4) score += 800;  // 四子连珠
-        else if (playerCount === 3) score += 80;   // 三子连珠
-        else if (playerCount === 2) score += 8;    // 二子连珠
-    }
+    const playerScore = evaluateBoard();
     
     // 恢复空位置
     gameBoard[row][col] = EMPTY;
     
+    // 综合考虑进攻和防守
+    return aiScore * 1.1 + playerScore;
+}
+
+// 高级位置评估
+function evaluatePositionAdvanced(row, col) {
+    // 如果该位置周围没有棋子，分数较低
+    if (!hasNeighbor(row, col, 2)) {
+        return 0;
+    }
+    
+    // 模拟AI在该位置落子
+    gameBoard[row][col] = PLAYER_WHITE;
+    const aiScore = evaluateBoardAdvanced();
+    
+    // 模拟玩家在该位置落子
+    gameBoard[row][col] = PLAYER_BLACK;
+    const playerScore = evaluateBoardAdvanced();
+    
+    // 恢复空位置
+    gameBoard[row][col] = EMPTY;
+    
+    // 综合考虑进攻和防守，加入位置价值
+    return aiScore * 1.1 + playerScore + getPositionValue(row, col);
+}
+
+// 为特定玩家评估位置
+function evaluatePositionForPlayer(row, col, player) {
+    let score = 0;
+    
+    // 检查8个方向
+    for (const [dx, dy] of DIRECTIONS) {
+        // 正方向
+        score += evaluateDirectionForPlayer(row, col, dx, dy, player);
+        // 反方向
+        score += evaluateDirectionForPlayer(row, col, -dx, -dy, player);
+    }
+    
     return score;
 }
 
-// 评估整个棋盘的局势
+// 评估特定方向的分数
+function evaluateDirectionForPlayer(row, col, dx, dy, player) {
+    const pattern = getPatternInDirection(row, col, dx, dy, player);
+    return evaluatePattern(pattern, player === PLAYER_WHITE);
+}
+
+// 评估棋盘整体分数
 function evaluateBoard() {
-    let score = 0;
-    
-    // 扫描整个棋盘
-    for (let row = 0; row < BOARD_SIZE; row++) {
-        for (let col = 0; col < BOARD_SIZE; col++) {
-            if (gameBoard[row][col] !== EMPTY) {
-                const player = gameBoard[row][col];
-                const isAI = player === PLAYER_WHITE;
-                
-                // 对每个方向进行评估
-                for (const [dx, dy] of DIRECTIONS) {
-                    // 只评估每个连续序列一次
-                    if (
-                        row - dx < 0 || row - dx >= BOARD_SIZE || 
-                        col - dy < 0 || col - dy >= BOARD_SIZE || 
-                        gameBoard[row - dx][col - dy] !== player
-                    ) {
-                        let count = 1;
-                        let blocked = 0;
-                        
-                        // 计算连续棋子数量
-                        let r = row + dx;
-                        let c = col + dy;
-                        
-                        while (
-                            r >= 0 && r < BOARD_SIZE && 
-                            c >= 0 && c < BOARD_SIZE && 
-                            gameBoard[r][c] === player
-                        ) {
-                            count++;
-                            r += dx;
-                            c += dy;
-                        }
-                        
-                        // 检查是否被阻挡
-                        if (r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE && gameBoard[r][c] !== EMPTY) {
-                            blocked++;
-                        }
-                        
-                        r = row - dx;
-                        c = col - dy;
-                        
-                        if (r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE && gameBoard[r][c] !== EMPTY && gameBoard[r][c] !== player) {
-                            blocked++;
-                        }
-                        
-                        // 根据连子数量和是否被阻挡计算分数
-                        let patternScore = 0;
-                        
-                        if (count >= 5) {
-                            patternScore = 100000;  // 五子连珠
-                        } else if (count === 4) {
-                            patternScore = blocked === 0 ? 10000 : 1000;  // 活四/冲四
-                        } else if (count === 3) {
-                            patternScore = blocked === 0 ? 1000 : 100;    // 活三/冲三
-                        } else if (count === 2) {
-                            patternScore = blocked === 0 ? 100 : 10;      // 活二/冲二
-                        } else {
-                            patternScore = 1;
-                        }
-                        
-                        // AI得分为正，玩家得分为负
-                        score += isAI ? patternScore : -patternScore;
-                    }
-                }
-            }
-        }
-    }
-    
-    return score;
+    return evaluatePatterns();
 }
 
-// 高级棋盘评估函数
+// 高级棋盘评估
 function evaluateBoardAdvanced() {
-    let score = 0;
+    // 基础模式评分
+    const baseScore = evaluatePatterns();
     
-    // 1. 基本评分 - 与evaluateBoard相同的逻辑
-    score += evaluateBoard() * 0.7;  // 权重为0.7
+    // 加入位置控制评分
+    const controlScore = evaluatePositionControl();
     
-    // 2. 棋形评分 - 识别和评估特定的棋形
-    score += evaluatePatterns() * 0.3;  // 权重为0.3
+    // 加入威胁评分
+    const threatScore = evaluateThreatPatterns();
     
-    return score;
+    return baseScore + controlScore + threatScore;
 }
 
-// 评估棋盘上的棋形
+// 评估棋型分数
 function evaluatePatterns() {
-    let score = 0;
+    let aiScore = 0;
+    let playerScore = 0;
     
-    // 扫描整个棋盘寻找特定棋形
+    // 遍历所有棋子
     for (let row = 0; row < BOARD_SIZE; row++) {
         for (let col = 0; col < BOARD_SIZE; col++) {
             if (gameBoard[row][col] !== EMPTY) {
-                const player = gameBoard[row][col];
-                const isAI = player === PLAYER_WHITE;
+                const isAI = gameBoard[row][col] === PLAYER_WHITE;
                 
-                // 对每个方向进行评估
+                // 检查4个方向
                 for (const [dx, dy] of DIRECTIONS) {
-                    // 只评估每个连续序列一次
-                    if (
-                        row - dx < 0 || row - dx >= BOARD_SIZE || 
-                        col - dy < 0 || col - dy >= BOARD_SIZE || 
-                        gameBoard[row - dx][col - dy] !== player
-                    ) {
-                        // 获取该方向上的棋形
-                        const pattern = getPatternInDirection(row, col, dx, dy, player);
+                    // 只检查每个连续棋型的起点
+                    if (!isStartOfLine(row, col, -dx, -dy, gameBoard[row][col])) {
+                        const pattern = getPatternInDirection(row, col, dx, dy, gameBoard[row][col]);
+                        const score = evaluatePattern(pattern, isAI);
                         
-                        // 评估棋形分数
-                        const patternScore = evaluateSpecificPattern(pattern, isAI);
-                        
-                        // 累加分数
-                        score += patternScore;
+                        if (isAI) {
+                            aiScore += score;
+                        } else {
+                            playerScore += score;
+                        }
                     }
                 }
             }
         }
     }
     
+    return aiScore - playerScore;
+}
+
+// 评估位置控制
+function evaluatePositionControl() {
+    let score = 0;
+    
+    // 计算关键位置的控制情况
+    const centerControl = countPiecesInArea(5, 5, 9, 9, PLAYER_WHITE) - 
+                         countPiecesInArea(5, 5, 9, 9, PLAYER_BLACK);
+    
+    // 计算边缘控制
+    const edgeControl = countPiecesInArea(0, 0, 14, 4, PLAYER_WHITE) +
+                       countPiecesInArea(0, 10, 14, 14, PLAYER_WHITE) + 
+                       countPiecesInArea(0, 0, 4, 14, PLAYER_WHITE) +
+                       countPiecesInArea(10, 0, 14, 14, PLAYER_WHITE) -
+                       (countPiecesInArea(0, 0, 14, 4, PLAYER_BLACK) +
+                       countPiecesInArea(0, 10, 14, 14, PLAYER_BLACK) + 
+                       countPiecesInArea(0, 0, 4, 14, PLAYER_BLACK) +
+                       countPiecesInArea(10, 0, 14, 14, PLAYER_BLACK));
+    
+    score += centerControl * 10; // 中心控制更重要
+    score += edgeControl * 5;    // 边缘控制也有价值
+    
     return score;
 }
 
-// 获取指定方向上的棋形
+// 计算区域内特定玩家的棋子数量
+function countPiecesInArea(startRow, startCol, endRow, endCol, player) {
+    let count = 0;
+    
+    for (let row = startRow; row <= endRow; row++) {
+        for (let col = startCol; col <= endCol; col++) {
+            if (gameBoard[row][col] === player) {
+                count++;
+            }
+        }
+    }
+    
+    return count;
+}
+
+// 评估威胁棋型
+function evaluateThreatPatterns() {
+    let score = 0;
+    
+    // 检查AI的跳活三
+    const aiJumpThrees = countPatternOccurrences(PLAYER_WHITE, "EMPTY,PLAYER,PLAYER,EMPTY,PLAYER,EMPTY");
+    score += aiJumpThrees * 50;
+    
+    // 检查玩家的跳活三
+    const playerJumpThrees = countPatternOccurrences(PLAYER_BLACK, "EMPTY,PLAYER,PLAYER,EMPTY,PLAYER,EMPTY");
+    score -= playerJumpThrees * 60; // 防守权重更高
+    
+    // 检查AI的连活三
+    const aiLiveThrees = countPatternOccurrences(PLAYER_WHITE, "EMPTY,PLAYER,PLAYER,PLAYER,EMPTY");
+    score += aiLiveThrees * 80;
+    
+    // 检查玩家的连活三
+    const playerLiveThrees = countPatternOccurrences(PLAYER_BLACK, "EMPTY,PLAYER,PLAYER,PLAYER,EMPTY");
+    score -= playerLiveThrees * 90;
+    
+    return score;
+}
+
+// 计算特定棋型的出现次数
+function countPatternOccurrences(player, patternStr) {
+    const pattern = patternStr.split(',').map(item => 
+        item === 'PLAYER' ? player : 
+        item === 'EMPTY' ? EMPTY : 
+        item === 'OPPONENT' ? (player === PLAYER_WHITE ? PLAYER_BLACK : PLAYER_WHITE) : 
+        item
+    );
+    
+    let count = 0;
+    
+    // 遍历所有可能的起点
+    for (let row = 0; row < BOARD_SIZE; row++) {
+        for (let col = 0; col < BOARD_SIZE; col++) {
+            // 检查4个方向
+            for (const [dx, dy] of DIRECTIONS) {
+                if (matchesPattern(row, col, dx, dy, pattern)) {
+                    count++;
+                }
+            }
+        }
+    }
+    
+    return count;
+}
+
+// 检查是否匹配特定棋型
+function matchesPattern(row, col, dx, dy, pattern) {
+    for (let i = 0; i < pattern.length; i++) {
+        const r = row + i * dx;
+        const c = col + i * dy;
+        
+        // 检查边界
+        if (r < 0 || r >= BOARD_SIZE || c < 0 || c >= BOARD_SIZE) {
+            return false;
+        }
+        
+        // 检查棋子是否匹配
+        if (pattern[i] !== gameBoard[r][c]) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+// 获取特定方向的棋型
 function getPatternInDirection(row, col, dx, dy, player) {
     let pattern = '';
+    let count = 0;
     
-    // 向反方向扩展
-    let r = row - dx;
-    let c = col - dy;
-    while (r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE) {
-        if (gameBoard[r][c] === player) {
-            pattern = 'X' + pattern;
-        } else if (gameBoard[r][c] === EMPTY) {
-            pattern = '.' + pattern;
-            break;
-        } else {
-            pattern = 'O' + pattern;
-            break;
+    // 最多检查6个位置（足够评估五子连珠相关的棋型）
+    for (let i = 0; i < 6; i++) {
+        const r = row + i * dx;
+        const c = col + i * dy;
+        
+        // 检查边界
+        if (r < 0 || r >= BOARD_SIZE || c < 0 || c >= BOARD_SIZE) {
+            pattern += 'X'; // 边界外用X表示
+            continue;
         }
-        r -= dx;
-        c -= dy;
-    }
-    
-    if (r < 0 || r >= BOARD_SIZE || c < 0 || c >= BOARD_SIZE) {
-        pattern = '#' + pattern;  // 边界
-    }
-    
-    // 中心点
-    pattern += 'X';
-    
-    // 向正方向扩展
-    r = row + dx;
-    c = col + dy;
-    while (r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE) {
-        if (gameBoard[r][c] === player) {
-            pattern += 'X';
-        } else if (gameBoard[r][c] === EMPTY) {
+        
+        // 根据棋子类型添加到棋型中
+        if (gameBoard[r][c] === EMPTY) {
             pattern += '.';
-            break;
-        } else {
+        } else if (gameBoard[r][c] === player) {
             pattern += 'O';
-            break;
+            count++;
+        } else {
+            pattern += 'X';
         }
-        r += dx;
-        c += dy;
-    }
-    
-    if (r < 0 || r >= BOARD_SIZE || c < 0 || c >= BOARD_SIZE) {
-        pattern += '#';  // 边界
     }
     
     return pattern;
 }
 
-// 评估特定棋形的分数
-function evaluateSpecificPattern(pattern, isAI) {
-    // 棋形分数表
-    const patternScores = {
-        // 活四
-        '.XXXX.': 10000,
-        // 冲四
-        '.XXXX#': 1000, '#XXXX.': 1000, '.XXXOX': 1000, 'XO.XXX': 1000,
-        // 活三
-        '.XXX..': 1000, '..XXX.': 1000, '.X.XX.': 800, '.XX.X.': 800,
-        // 冲三
-        '.XXX.O': 100, 'O.XXX.': 100, '#.XXX.': 100, '.XXX.#': 100,
-        // 活二
-        '..XX..': 100, '.X.X..': 80, '..X.X.': 80,
-        // 冲二
-        '..XX.O': 10, 'O.XX..': 10, '#.XX..': 10, '..XX.#': 10
-    };
+// 评估特定棋型的分数
+function evaluatePattern(pattern, isAI) {
+    // 五子连珠
+    if (pattern.includes('OOOOO')) return isAI ? 100000 : -100000;
     
-    // 检查棋形是否在分数表中
-    let score = patternScores[pattern] || 0;
+    // 活四
+    if (pattern.includes('.OOOO.')) return isAI ? 10000 : -10000;
     
-    // AI得分为正，玩家得分为负
-    return isAI ? score : -score;
+    // 冲四
+    if (pattern.includes('XOOOO.') || pattern.includes('.OOOOX') || 
+        pattern.includes('OOO.O') || pattern.includes('OO.OO') || 
+        pattern.includes('O.OOO')) return isAI ? 1000 : -1000;
+    
+    // 活三
+    if (pattern.includes('.OOO..') || pattern.includes('..OOO.') || 
+        pattern.includes('.O.OO.') || pattern.includes('.OO.O.')) return isAI ? 500 : -500;
+    
+    // 眠三
+    if (pattern.includes('XOOO..') || pattern.includes('..OOOX') || 
+        pattern.includes('XO.OO.') || pattern.includes('.OO.OX') || 
+        pattern.includes('XOO.O.') || pattern.includes('.O.OOX')) return isAI ? 100 : -100;
+    
+    // 活二
+    if (pattern.includes('..OO..') || pattern.includes('.O.O..') || 
+        pattern.includes('..O.O.')) return isAI ? 50 : -50;
+    
+    // 眠二
+    if (pattern.includes('X.OO..') || pattern.includes('..OO.X') || 
+        pattern.includes('XO.O..') || pattern.includes('..O.OX')) return isAI ? 10 : -10;
+    
+    // 活一
+    if (pattern.includes('...O...')) return isAI ? 5 : -5;
+    
+    return 0;
 }
 
-// 检查游戏是否结束
-function isGameOver() {
-    // 检查是否有玩家获胜
-    for (let row = 0; row < BOARD_SIZE; row++) {
-        for (let col = 0; col < BOARD_SIZE; col++) {
-            const player = gameBoard[row][col];
-            if (player !== EMPTY) {
-                for (const [dx, dy] of DIRECTIONS) {
-                    let count = 1;
-                    
-                    // 正方向检查
-                    count += countConsecutive(row, col, dx, dy, player);
-                    // 反方向检查
-                    count += countConsecutive(row, col, -dx, -dy, player);
-                    
-                    // 如果连续五子，则游戏结束
-                    if (count >= 5) {
-                        return true;
-                    }
-                }
+// 检查棋型：活四
+function checkFour(row, col, dx, dy, player) {
+    // 获取该方向的棋型
+    const pattern = getPatternInDirection(row, col, dx, dy, player);
+    
+    // 检查是否形成活四或冲四
+    return pattern.includes('.OOOO.') || pattern.includes('XOOOO.') || 
+           pattern.includes('.OOOOX') || pattern.includes('OOO.O') || 
+           pattern.includes('OO.OO') || pattern.includes('O.OOO');
+}
+
+// 检查棋型：活三
+function checkLiveThree(row, col, dx, dy, player) {
+    // 获取该方向的棋型
+    const pattern = getPatternInDirection(row, col, dx, dy, player);
+    
+    // 检查是否形成活三
+    return pattern.includes('.OOO..') || pattern.includes('..OOO.') || 
+           pattern.includes('.O.OO.') || pattern.includes('.OO.O.');
+}
+
+// 检查是否是连续棋型的起点
+function isStartOfLine(row, col, dx, dy, player) {
+    const r = row + dx;
+    const c = col + dy;
+    
+    // 检查边界
+    if (r < 0 || r >= BOARD_SIZE || c < 0 || c >= BOARD_SIZE) {
+        return true;
+    }
+    
+    // 如果前一个位置是相同玩家的棋子，则不是起点
+    return gameBoard[r][c] === player;
+}
+
+// 检查是否有邻居
+function hasNeighbor(row, col, distance) {
+    for (let i = -distance; i <= distance; i++) {
+        for (let j = -distance; j <= distance; j++) {
+            if (i === 0 && j === 0) continue;
+            
+            const r = row + i;
+            const c = col + j;
+            
+            if (r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE && gameBoard[r][c] !== EMPTY) {
+                return true;
             }
         }
     }
     
-    // 检查棋盘是否已满
-    return gameBoard.every(row => row.every(cell => cell !== EMPTY));
+    return false;
 }
 
-// 获取所有可用的移动
+// 获取位置价值
+function getPositionValue(row, col) {
+    // 中心位置最有价值
+    const centerDistance = Math.sqrt(Math.pow(row - 7, 2) + Math.pow(col - 7, 2));
+    
+    // 标记点位置也有额外价值
+    const isMarkPosition = MARK_POSITIONS.some(([r, c]) => r === row && c === col);
+    
+    // 计算位置价值
+    return Math.max(0, 15 - centerDistance) + (isMarkPosition ? 5 : 0);
+}
+
+// 获取可用的移动
 function getAvailableMoves() {
     const moves = [];
     
-    // 只考虑已有棋子周围的空位置，以减少搜索空间
-    const visited = Array(BOARD_SIZE).fill().map(() => Array(BOARD_SIZE).fill(false));
-    
-    // 扫描整个棋盘
     for (let row = 0; row < BOARD_SIZE; row++) {
         for (let col = 0; col < BOARD_SIZE; col++) {
-            // 如果该位置有棋子
-            if (gameBoard[row][col] !== EMPTY) {
-                // 检查周围8个位置
-                for (let dr = -2; dr <= 2; dr++) {
-                    for (let dc = -2; dc <= 2; dc++) {
-                        if (dr === 0 && dc === 0) continue;
-                        
-                        const r = row + dr;
-                        const c = col + dc;
-                        
-                        // 确保位置在棋盘内且为空且未被访问过
-                        if (r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE && 
-                            gameBoard[r][c] === EMPTY && !visited[r][c]) {
-                            moves.push({ row: r, col: c });
-                            visited[r][c] = true;
-                        }
-                    }
-                }
+            if (gameBoard[row][col] === EMPTY) {
+                moves.push({ row, col });
             }
         }
     }
     
-    // 如果没有找到移动（棋盘为空或所有棋子周围都被占用），返回中心位置
-    if (moves.length === 0 && gameBoard[7][7] === EMPTY) {
-        return [{ row: 7, col: 7 }];
+    return moves;
+}
+
+// 寻找跳跃式活四移动
+function findJumpFourMove(player) {
+    // 获取所有可用的移动
+    const availableMoves = getAvailableMoves();
+    
+    for (const move of availableMoves) {
+        // 模拟落子
+        gameBoard[move.row][move.col] = player;
+        
+        // 检查是否形成跳跃式活四
+        let hasJumpFour = false;
+        
+        // 检查所有方向
+        for (const [dx, dy] of DIRECTIONS) {
+            // 检查不同形式的跳跃式活四
+            if (checkJumpPattern(move.row, move.col, dx, dy, player, "OO.OO") ||
+                checkJumpPattern(move.row, move.col, dx, dy, player, "O.OOO")) {
+                hasJumpFour = true;
+                break;
+            }
+        }
+        
+        // 还原棋盘
+        gameBoard[move.row][move.col] = EMPTY;
+        
+        // 如果形成跳跃式活四，返回该位置
+        if (hasJumpFour) {
+            return move;
+        }
     }
     
-    return moves;
+    return null;
 }
 
-// 获取带有历史启发的可用移动
-function getAvailableMovesWithHistory(isMaximizing) {
-    const moves = getAvailableMoves();
+// 检查跳跃式棋型
+function checkJumpPattern(row, col, dx, dy, player, patternStr) {
+    const pattern = patternStr.split('').map(c => 
+        c === 'O' ? player : 
+        c === '.' ? EMPTY : 
+        c === 'X' ? (player === PLAYER_WHITE ? PLAYER_BLACK : PLAYER_WHITE) : 
+        c
+    );
     
-    // 根据历史表对移动进行排序
-    moves.sort((a, b) => {
-        return historyTable[b.row][b.col] - historyTable[a.row][a.col];
-    });
+    // 向两个方向检查
+    for (let direction = -1; direction <= 1; direction += 2) {
+        let matches = true;
+        
+        for (let i = 0; i < pattern.length; i++) {
+            const r = row + direction * dx * i;
+            const c = col + direction * dy * i;
+            
+            // 检查边界
+            if (r < 0 || r >= BOARD_SIZE || c < 0 || c >= BOARD_SIZE) {
+                matches = false;
+                break;
+            }
+            
+            // 检查棋子是否匹配
+            if (gameBoard[r][c] !== pattern[i]) {
+                matches = false;
+                break;
+            }
+        }
+        
+        if (matches) return true;
+    }
     
-    return moves;
+    return false;
 }
 
-// 历史启发表 - 记录每个位置的历史得分
-const historyTable = Array(BOARD_SIZE).fill().map(() => Array(BOARD_SIZE).fill(0));
+// 检查是否有跳跃式活三
+function hasJumpThree(row, col, player) {
+    let jumpThreeCount = 0;
+    
+    // 检查所有方向
+    for (const [dx, dy] of DIRECTIONS) {
+        if (checkJumpThree(row, col, dx, dy, player)) {
+            jumpThreeCount++;
+            // 如果找到一个跳跃式活三就返回
+            if (jumpThreeCount > 0) {
+                return true;
+            }
+        }
+    }
+    
+    return false;
+}
 
-// 带有历史启发的极小化极大算法
+// 检查特定方向是否有跳跃式活三
+function checkJumpThree(row, col, dx, dy, player) {
+    // 检查棋型: .O.OO. 或 .OO.O.
+    return checkJumpPattern(row, col, dx, dy, player, ".O.OO.") || 
+           checkJumpPattern(row, col, dx, dy, player, ".OO.O.");
+}
+
+// 寻找跳活三移动
+function findJumpThreeMoves(player) {
+    // 获取所有可用的移动
+    const availableMoves = getAvailableMoves();
+    
+    for (const move of availableMoves) {
+        // 模拟落子
+        gameBoard[move.row][move.col] = player;
+        
+        // 检查是否形成跳跃式活三
+        const hasJumpThreeResult = hasJumpThree(move.row, move.col, player);
+        
+        // 还原棋盘
+        gameBoard[move.row][move.col] = EMPTY;
+        
+        // 如果形成跳跃式活三，返回该位置
+        if (hasJumpThreeResult) {
+            return move;
+        }
+    }
+    
+    return null;
+}
+
+// 使用带有历史启发的Alpha-Beta极小化极大算法
 function minimaxWithHistory(depth, isMaximizing, alpha, beta) {
-    // 如果达到最大深度或游戏结束，评估局势
+    // 到达叶子节点或达到搜索深度限制
     if (depth === 0 || isGameOver()) {
         return evaluateBoardAdvanced();
     }
     
-    // 获取所有可能的移动并根据历史表排序
-    const availableMoves = getAvailableMovesWithHistory(isMaximizing);
+    // 获取所有可能的移动，并使用历史启发进行排序
+    const moves = getPrioritizedMoves();
     
     if (isMaximizing) {
         let maxEval = -Infinity;
-        let bestMove = null;
         
-        for (const move of availableMoves) {
+        for (const move of moves) {
             // 模拟落子
             gameBoard[move.row][move.col] = PLAYER_WHITE;
             
@@ -724,14 +827,11 @@ function minimaxWithHistory(depth, isMaximizing, alpha, beta) {
             // 还原棋盘
             gameBoard[move.row][move.col] = EMPTY;
             
-            // 更新最大值
-            if (evaluation > maxEval) {
-                maxEval = evaluation;
-                bestMove = move;
-            }
+            // 更新最大评分
+            maxEval = Math.max(maxEval, evaluation);
             
             // Alpha-Beta剪枝
-            alpha = Math.max(alpha, maxEval);
+            alpha = Math.max(alpha, evaluation);
             if (beta <= alpha) {
                 break;
             }
@@ -740,9 +840,8 @@ function minimaxWithHistory(depth, isMaximizing, alpha, beta) {
         return maxEval;
     } else {
         let minEval = Infinity;
-        let bestMove = null;
         
-        for (const move of availableMoves) {
+        for (const move of moves) {
             // 模拟落子
             gameBoard[move.row][move.col] = PLAYER_BLACK;
             
@@ -752,14 +851,11 @@ function minimaxWithHistory(depth, isMaximizing, alpha, beta) {
             // 还原棋盘
             gameBoard[move.row][move.col] = EMPTY;
             
-            // 更新最小值
-            if (evaluation < minEval) {
-                minEval = evaluation;
-                bestMove = move;
-            }
+            // 更新最小评分
+            minEval = Math.min(minEval, evaluation);
             
             // Alpha-Beta剪枝
-            beta = Math.min(beta, minEval);
+            beta = Math.min(beta, evaluation);
             if (beta <= alpha) {
                 break;
             }
@@ -769,158 +865,30 @@ function minimaxWithHistory(depth, isMaximizing, alpha, beta) {
     }
 }
 
-// 查找跳三着法
-function findJumpThreeMoves(player) {
-    const jumpThrees = [];
-    
+// 检查游戏是否结束
+function isGameOver() {
+    // 检查是否有获胜者
     for (let row = 0; row < BOARD_SIZE; row++) {
         for (let col = 0; col < BOARD_SIZE; col++) {
-            if (gameBoard[row][col] === EMPTY) {
-                // 模拟落子
-                gameBoard[row][col] = player;
-                
-                // 检查是否形成跳三
-                if (hasJumpThree(row, col, player)) {
-                    jumpThrees.push({ 
-                        row, 
-                        col, 
-                        score: evaluateJumpThreeScore(row, col, player)
-                    });
+            if (gameBoard[row][col] !== EMPTY) {
+                // 检查是否连成五子
+                for (const [dx, dy] of DIRECTIONS) {
+                    const count = 1 + countConsecutive(row, col, dx, dy, gameBoard[row][col]) + 
+                                  countConsecutive(row, col, -dx, -dy, gameBoard[row][col]);
+                    if (count >= 5) {
+                        return true;
+                    }
                 }
-                
-                // 还原棋盘
-                gameBoard[row][col] = EMPTY;
             }
         }
     }
     
-    // 按评分排序
-    jumpThrees.sort((a, b) => b.score - a.score);
-    return jumpThrees;
-}
-
-// 检查是否有跳三
-function hasJumpThree(row, col, player) {
-    const directions = [
-        [0, 1],  // 水平
-        [1, 0],  // 垂直
-        [1, 1],  // 右下对角
-        [1, -1]  // 左下对角
-    ];
-    
-    for (const [dx, dy] of directions) {
-        if (checkJumpThree(row, col, dx, dy, player)) {
-            return true;
-        }
-    }
-    
-    return false;
-}
-
-// 检查特定方向上是否有跳三
-function checkJumpThree(row, col, dx, dy, player) {
-    // 跳三模式: X_XX 或 XX_X (中间有一个空位的连续三个棋子)
-    return checkPattern(row, col, dx, dy, [player, EMPTY, player, player]) ||
-           checkPattern(row, col, dx, dy, [player, player, EMPTY, player]);
-}
-
-// 评估跳三得分
-function evaluateJumpThreeScore(row, col, player) {
-    // 基础分
-    let score = 70;
-    
-    // 检查这个位置是否同时形成多个跳三
-    const directions = [
-        [0, 1],  // 水平
-        [1, 0],  // 垂直
-        [1, 1],  // 右下对角
-        [1, -1]  // 左下对角
-    ];
-    
-    let jumpThreeCount = 0;
-    
-    for (const [dx, dy] of directions) {
-        if (checkJumpThree(row, col, dx, dy, player)) {
-            jumpThreeCount++;
-        }
-    }
-    
-    // 多个方向的跳三会获得额外分数
-    score += jumpThreeCount * 35;
-    
-    // 靠近棋盘中心的位置得分更高
-    const centerDistance = Math.sqrt(Math.pow(row - 7, 2) + Math.pow(col - 7, 2));
-    score -= centerDistance * 4;
-    
-    return score;
-}
-
-// 检查是否形成连续四子
-function checkFour(row, col, dx, dy, player) {
-    // 从该位置向指定方向检查连续四子
-    let count = 1; // 当前位置已经有一个棋子
-    
-    // 沿着方向检查
-    for (let step = 1; step <= 4; step++) {
-        const r = row + dx * step;
-        const c = col + dy * step;
-        
-        // 超出边界或不是指定玩家的棋子，跳出循环
-        if (r < 0 || r >= BOARD_SIZE || c < 0 || c >= BOARD_SIZE || gameBoard[r][c] !== player) {
-            break;
-        }
-        
-        count++;
-    }
-    
-    // 沿着反方向检查
-    for (let step = 1; step <= 4; step++) {
-        const r = row - dx * step;
-        const c = col - dy * step;
-        
-        // 超出边界或不是指定玩家的棋子，跳出循环
-        if (r < 0 || r >= BOARD_SIZE || c < 0 || c >= BOARD_SIZE || gameBoard[r][c] !== player) {
-            break;
-        }
-        
-        count++;
-    }
-    
-    // 如果总数达到4，则形成连续四子
-    return count >= 4;
-}
-
-// 检查是否形成活三（两端都是空格的连续三子）
-function checkLiveThree(row, col, dx, dy, player) {
-    // 获取这个方向的模式
-    const pattern = getPatternInDirection(row, col, dx, dy, player);
-    
-    // 检查是否是活三模式
-    // 活三模式: _XXX_ (两端都是空格的连续三子)
-    return pattern === `${EMPTY}${player}${player}${player}${EMPTY}`;
-}
-
-// 检查特定模式
-function checkPattern(row, col, dx, dy, pattern) {
-    const length = pattern.length;
-    
-    // 检查是否能放置模式（是否超出边界）
-    for (let i = 0; i < length; i++) {
-        const r = row + dx * i;
-        const c = col + dy * i;
-        
-        if (r < 0 || r >= BOARD_SIZE || c < 0 || c >= BOARD_SIZE) {
-            return false;
-        }
-    }
-    
-    // 检查是否匹配模式
-    for (let i = 0; i < length; i++) {
-        const r = row + dx * i;
-        const c = col + dy * i;
-        
-        if (gameBoard[r][c] !== pattern[i]) {
-            return false;
+    // 检查是否平局（棋盘已满）
+    for (let row = 0; row < BOARD_SIZE; row++) {
+        for (let col = 0; col < BOARD_SIZE; col++) {
+            if (gameBoard[row][col] === EMPTY) {
+                return false;
+            }
         }
     }
     

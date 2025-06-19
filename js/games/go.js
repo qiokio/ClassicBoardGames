@@ -113,37 +113,74 @@ function initEventListeners() {
     const boardSizeButtons = document.querySelectorAll('#board-size-selector button');
     boardSizeButtons.forEach(button => {
         button.addEventListener('click', () => {
-            boardSizeButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            boardSize = parseInt(button.dataset.size);
-            initGame();
+            const newSize = parseInt(button.dataset.size);
+            
+            // 如果大小没有变化，不执行任何操作
+            if (newSize === boardSize) {
+                return;
+            }
+            
+            // 显示确认对话框
+            if (confirm(`确定要将棋盘大小更改为${newSize}×${newSize}吗？这将重新开始游戏。`)) {
+                boardSizeButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                boardSize = newSize;
+                initGame();
+            }
         });
     });
     
     // 游戏模式选择
     document.getElementById('pvp-btn').addEventListener('click', () => {
-        document.getElementById('pvp-btn').classList.add('active');
-        document.getElementById('pvc-btn').classList.remove('active');
-        document.getElementById('difficulty-selector').style.display = 'none';
-        gameMode = 'pvp';
-        initGame();
+        // 如果模式没有变化，不执行任何操作
+        if (gameMode === 'pvp') {
+            return;
+        }
+        
+        // 显示确认对话框
+        if (confirm('确定要切换到双人对战模式吗？这将重新开始游戏。')) {
+            document.getElementById('pvp-btn').classList.add('active');
+            document.getElementById('pvc-btn').classList.remove('active');
+            document.getElementById('difficulty-selector').style.display = 'none';
+            gameMode = 'pvp';
+            initGame();
+        }
     });
     
     document.getElementById('pvc-btn').addEventListener('click', () => {
-        document.getElementById('pvc-btn').classList.add('active');
-        document.getElementById('pvp-btn').classList.remove('active');
-        document.getElementById('difficulty-selector').style.display = 'block';
-        gameMode = 'pvc';
-        initGame();
+        // 如果模式没有变化，不执行任何操作
+        if (gameMode === 'pvc') {
+            return;
+        }
+        
+        // 显示确认对话框
+        if (confirm('确定要切换到人机对战模式吗？这将重新开始游戏。')) {
+            document.getElementById('pvc-btn').classList.add('active');
+            document.getElementById('pvp-btn').classList.remove('active');
+            document.getElementById('difficulty-selector').style.display = 'block';
+            gameMode = 'pvc';
+            initGame();
+        }
     });
     
     // 难度选择
     const difficultyButtons = document.querySelectorAll('#difficulty-selector button');
     difficultyButtons.forEach(button => {
         button.addEventListener('click', () => {
-            difficultyButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            difficulty = button.dataset.level;
+            const newDifficulty = button.dataset.level;
+            
+            // 如果难度没有变化，不执行任何操作
+            if (newDifficulty === difficulty) {
+                return;
+            }
+            
+            // 显示确认对话框
+            if (confirm(`确定要将难度更改为"${getDifficultyName(newDifficulty)}"吗？这将重新开始游戏。`)) {
+                difficultyButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                difficulty = newDifficulty;
+                initGame();
+            }
         });
     });
     
@@ -153,6 +190,16 @@ function initEventListeners() {
     document.getElementById('resign-btn').addEventListener('click', handleResign);
     document.getElementById('undo-btn').addEventListener('click', handleUndo);
     document.getElementById('reset-score-btn').addEventListener('click', resetScores);
+}
+
+// 获取难度名称的辅助函数
+function getDifficultyName(difficulty) {
+    const difficultyNames = {
+        'easy': '简单',
+        'medium': '中等',
+        'hard': '困难'
+    };
+    return difficultyNames[difficulty] || difficulty;
 }
 
 // 检查CSS文件是否加载

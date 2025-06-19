@@ -65,12 +65,24 @@ function initGame() {
     // 添加难度选择事件
     difficultyButtons.forEach(button => {
         button.addEventListener('click', () => {
-            // 移除所有按钮的active类
-            difficultyButtons.forEach(btn => btn.classList.remove('active'));
-            // 为当前按钮添加active类
-            button.classList.add('active');
-            // 设置当前难度
-            currentDifficulty = button.getAttribute('data-level');
+            const newDifficulty = button.getAttribute('data-level');
+            
+            // 如果难度没有变化，不执行任何操作
+            if (newDifficulty === currentDifficulty) {
+                return;
+            }
+            
+            // 显示确认对话框
+            if (confirm(`确定要将难度更改为"${getDifficultyName(newDifficulty)}"吗？这将重新开始游戏。`)) {
+                // 移除所有按钮的active类
+                difficultyButtons.forEach(btn => btn.classList.remove('active'));
+                // 为当前按钮添加active类
+                button.classList.add('active');
+                // 设置当前难度
+                currentDifficulty = newDifficulty;
+                // 重置游戏
+                resetGame();
+            }
         });
     });
     
@@ -322,18 +334,26 @@ function resetScores() {
 
 // 设置游戏模式
 function setGameMode(ai) {
-    againstAI = ai;
-    resetGame();
+    // 如果模式没有变化，不执行任何操作
+    if (ai === againstAI) {
+        return;
+    }
     
-    // 设置活跃按钮样式
-    if (ai) {
-        pvpButton.classList.remove('active');
-        pvcButton.classList.add('active');
-        difficultySelector.style.display = 'flex'; // 显示难度选择器
-    } else {
-        pvpButton.classList.add('active');
-        pvcButton.classList.remove('active');
-        difficultySelector.style.display = 'none'; // 隐藏难度选择器
+    // 显示确认对话框
+    if (confirm(`确定要切换到${ai ? '人机对战' : '双人对战'}模式吗？这将重新开始游戏。`)) {
+        againstAI = ai;
+        resetGame();
+        
+        // 设置活跃按钮样式
+        if (ai) {
+            pvpButton.classList.remove('active');
+            pvcButton.classList.add('active');
+            difficultySelector.style.display = 'flex'; // 显示难度选择器
+        } else {
+            pvpButton.classList.add('active');
+            pvcButton.classList.remove('active');
+            difficultySelector.style.display = 'none'; // 隐藏难度选择器
+        }
     }
 }
 
@@ -415,6 +435,16 @@ function loadScores() {
         scoreElements.o.textContent = scores.o;
         scoreElements.tie.textContent = scores.tie;
     }
+}
+
+// 获取难度名称的辅助函数
+function getDifficultyName(difficulty) {
+    const difficultyNames = {
+        'easy': '简单',
+        'medium': '中等',
+        'hard': '困难'
+    };
+    return difficultyNames[difficulty] || difficulty;
 }
 
 // 初始化游戏

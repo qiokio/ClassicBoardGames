@@ -95,12 +95,24 @@ function initGame() {
     // 添加难度选择事件
     difficultyButtons.forEach(button => {
         button.addEventListener('click', () => {
-            // 移除所有按钮的active类
-            difficultyButtons.forEach(btn => btn.classList.remove('active'));
-            // 为当前按钮添加active类
-            button.classList.add('active');
-            // 设置当前难度
-            currentDifficulty = button.getAttribute('data-level');
+            const newDifficulty = button.getAttribute('data-level');
+            
+            // 如果难度没有变化，不执行任何操作
+            if (newDifficulty === currentDifficulty) {
+                return;
+            }
+            
+            // 显示确认对话框
+            if (confirm(`确定要将难度更改为"${getDifficultyName(newDifficulty)}"吗？这将重新开始游戏。`)) {
+                // 移除所有按钮的active类
+                difficultyButtons.forEach(btn => btn.classList.remove('active'));
+                // 为当前按钮添加active类
+                button.classList.add('active');
+                // 设置当前难度
+                currentDifficulty = newDifficulty;
+                // 重置游戏
+                resetGame();
+            }
         });
     });
     
@@ -169,40 +181,49 @@ function handleCellClick(row, col) {
         console.log("人机模式，游戏继续，当前玩家:", currentPlayer);
         if (currentPlayer === PLAYER_WHITE) {
             console.log("准备调用AI...");
-            // 立即调用AI，不使用setTimeout
-            try {
-                // 确保makeAIMove是可用的
-                if (typeof makeAIMove === 'function') {
-                    makeAIMove();
-                } else {
-                    console.error("makeAIMove函数不可用，尝试使用备用方法");
-                    // 使用内联备用方法
-                    const backupAI = function() {
-                        console.log("使用内联备用AI");
-                        
-                        // 简单随机移动
-                        const emptyPositions = [];
-                        for (let r = 0; r < BOARD_SIZE; r++) {
-                            for (let c = 0; c < BOARD_SIZE; c++) {
-                                if (gameBoard[r][c] === EMPTY) {
-                                    emptyPositions.push({ row: r, col: c });
+            
+            // 添加AI思考中提示
+            showAIThinkingIndicator();
+            
+            // 使用setTimeout让AI思考提示能够显示出来，并产生思考的效果
+            setTimeout(() => {
+                try {
+                    // 确保makeAIMove是可用的
+                    if (typeof makeAIMove === 'function') {
+                        makeAIMove();
+                    } else {
+                        console.error("makeAIMove函数不可用，尝试使用备用方法");
+                        // 使用内联备用方法
+                        const backupAI = function() {
+                            console.log("使用内联备用AI");
+                            
+                            // 简单随机移动
+                            const emptyPositions = [];
+                            for (let r = 0; r < BOARD_SIZE; r++) {
+                                for (let c = 0; c < BOARD_SIZE; c++) {
+                                    if (gameBoard[r][c] === EMPTY) {
+                                        emptyPositions.push({ row: r, col: c });
+                                    }
                                 }
                             }
-                        }
+                            
+                            if (emptyPositions.length > 0) {
+                                const move = emptyPositions[Math.floor(Math.random() * emptyPositions.length)];
+                                console.log("备用AI选择位置:", move.row, move.col);
+                                placePiece(move.row, move.col);
+                                checkGameStatus(move.row, move.col);
+                            }
+                        };
                         
-                        if (emptyPositions.length > 0) {
-                            const move = emptyPositions[Math.floor(Math.random() * emptyPositions.length)];
-                            console.log("备用AI选择位置:", move.row, move.col);
-                            placePiece(move.row, move.col);
-                            checkGameStatus(move.row, move.col);
-                        }
-                    };
-                    
-                    backupAI();
+                        backupAI();
+                    }
+                } catch (e) {
+                    console.error("AI移动出错:", e);
+                } finally {
+                    // 移除AI思考提示
+                    hideAIThinkingIndicator();
                 }
-            } catch (e) {
-                console.error("AI移动出错:", e);
-            }
+            }, 800); // 800毫秒延迟，让思考提示显示一段时间
         }
     }
 }
@@ -461,23 +482,31 @@ function resetScores() {
 
 // 设置游戏模式
 function setGameMode(ai) {
-    againstAI = ai;
-    resetGame();
+    // 如果模式没有变化，不执行任何操作
+    if (ai === againstAI) {
+        return;
+    }
     
-    // 设置活跃按钮样式
-    if (ai) {
-        pvpButton.classList.remove('active');
-        pvcButton.classList.add('active');
-        difficultySelector.style.display = 'flex'; // 显示难度选择器
-        // 确保在人机对战模式下，玩家总是黑棋
-        currentPlayer = PLAYER_BLACK;
-        updateTurnIndicator();
-        console.log("已启用人机模式，玩家执黑，电脑执白");
-    } else {
-        pvpButton.classList.add('active');
-        pvcButton.classList.remove('active');
-        difficultySelector.style.display = 'none'; // 隐藏难度选择器
-        console.log("已启用双人模式");
+    // 显示确认对话框
+    if (confirm(`确定要切换到${ai ? '人机对战' : '双人对战'}模式吗？这将重新开始游戏。`)) {
+        againstAI = ai;
+        resetGame();
+        
+        // 设置活跃按钮样式
+        if (ai) {
+            pvpButton.classList.remove('active');
+            pvcButton.classList.add('active');
+            difficultySelector.style.display = 'flex'; // 显示难度选择器
+            // 确保在人机对战模式下，玩家总是黑棋
+            currentPlayer = PLAYER_BLACK;
+            updateTurnIndicator();
+            console.log("已启用人机模式，玩家执黑，电脑执白");
+        } else {
+            pvpButton.classList.add('active');
+            pvcButton.classList.remove('active');
+            difficultySelector.style.display = 'none'; // 隐藏难度选择器
+            console.log("已启用双人模式");
+        }
     }
 }
 
@@ -725,4 +754,64 @@ function ensureHelperFunctionsExist() {
 // 公开给其他脚本使用
 window.placePiece = placePiece;
 window.checkGameStatus = checkGameStatus;
-window.switchPlayer = switchPlayer; 
+window.switchPlayer = switchPlayer;
+
+// 显示AI思考提示
+function showAIThinkingIndicator() {
+    // 如果已经存在提示，则不重复创建
+    if (document.getElementById('ai-thinking-indicator')) {
+        return;
+    }
+    
+    // 创建思考提示元素
+    const indicator = document.createElement('div');
+    indicator.id = 'ai-thinking-indicator';
+    indicator.className = 'ai-thinking-indicator';
+    
+    // 添加提示文字
+    const text = document.createElement('span');
+    text.textContent = 'AI思考中';
+    indicator.appendChild(text);
+    
+    // 添加动画点
+    for (let i = 0; i < 3; i++) {
+        const dot = document.createElement('span');
+        dot.className = 'thinking-dot';
+        dot.textContent = '.';
+        indicator.appendChild(dot);
+    }
+    
+    // 将提示添加到棋盘中央
+    board.appendChild(indicator);
+    
+    // 添加CSS动画类
+    setTimeout(() => {
+        indicator.classList.add('active');
+    }, 10);
+}
+
+// 隐藏AI思考提示
+function hideAIThinkingIndicator() {
+    const indicator = document.getElementById('ai-thinking-indicator');
+    if (indicator) {
+        indicator.classList.remove('active');
+        // 动画结束后移除元素
+        setTimeout(() => {
+            if (indicator.parentNode) {
+                indicator.parentNode.removeChild(indicator);
+            }
+        }, 300);
+    }
+}
+
+// 获取难度名称的辅助函数
+function getDifficultyName(difficulty) {
+    const difficultyNames = {
+        'easy': '简单',
+        'medium': '中等',
+        'hard': '困难',
+        'expert': '专家',
+        'master': '大师'
+    };
+    return difficultyNames[difficulty] || difficulty;
+} 

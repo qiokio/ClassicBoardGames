@@ -51,6 +51,7 @@ let validMoves = []; // 有效移动位置
 let pendingPromotion = null; // 待升变的棋子
 let currentTurn = PLAYER; // 当前回合
 let gameOver = false; // 游戏是否结束
+let currentDifficulty = 'easy'; // 当前难度
 
 // 初始化游戏
 function initGame() {
@@ -1086,13 +1087,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // 设置AI难度
 function setDifficulty(level) {
-    // 在实际项目中，可以根据难度级别调整AI的行为
-    // 例如，更高的难度可以让AI考虑更多步骤，或使用更复杂的评估函数
-    console.log(`将棋AI难度设置为: ${level}`);
+    // 如果难度没有变化，不执行任何操作
+    if (level === currentDifficulty) {
+        return;
+    }
     
-    // 这里可以根据难度调整AI的行为
-    // 例如：
-    // - 简单：随机移动
-    // - 中等：考虑简单的战术
-    // - 困难：使用更深层次的搜索和更复杂的评估
+    // 显示确认对话框
+    if (confirm(`确定要将难度更改为"${getDifficultyName(level)}"吗？这将重新开始游戏。`)) {
+        // 在实际项目中，可以根据难度级别调整AI的行为
+        // 例如，更高的难度可以让AI考虑更多步骤，或使用更复杂的评估函数
+        console.log(`将棋AI难度设置为: ${level}`);
+        
+        // 更新难度
+        currentDifficulty = level;
+        
+        // 重置游戏
+        initGame();
+    }
+}
+
+// 获取难度名称的辅助函数
+function getDifficultyName(difficulty) {
+    const difficultyNames = {
+        'easy': '简单',
+        'medium': '中等',
+        'hard': '困难',
+        'expert': '专家'
+    };
+    return difficultyNames[difficulty] || difficulty;
 } 
